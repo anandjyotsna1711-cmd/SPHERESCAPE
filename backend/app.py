@@ -1,0 +1,159 @@
+
+from pathlib import Path
+
+from flask import Flask, render_template, send_file, jsonify, request
+
+from nasa_api import search_spherex_observations
+
+from fits_processor import get_fits_summary
+
+from observation_matcher import group_observations
+
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+
+app = Flask(
+    __name__,
+    template_folder=str(PROJECT_DIR / "frontend" / "templates")
+)
+
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/first-light")
+def first_light():
+
+    image_path = (
+        PROJECT_DIR
+        / "data"
+        / "processed"
+        / "spherex_first_light.png"
+    )
+
+    if not image_path.exists():
+        return jsonify({"error": "First-light image not found"}), 404
+
+    return send_file(image_path, mimetype="image/png")
+
+
+@app.route("/api/observations")
+def observations():
+
+    try:
+        ra = float(request.args.get("ra"))
+        dec = float(request.args.get("dec"))
+
+        radius = float(request.args.get("radius", 1))
+        limit = int(request.args.get("limit", 50))
+
+        if not 0 <= ra <= 360:
+            return jsonify({"error": "RA must be between 0 and 360"}), 400
+
+        if not -90 <= dec <= 90:
+            return jsonify({"error": "DEC must be between -90 and 90"}), 400
+
+        if not 0 < radius <= 3600:
+            return jsonify({"error": "Radius must be greater than 0 and at most 3600 arcseconds"}), 400
+
+        if not 1 <= limit <= 100:
+            return jsonify({"error": "Limit must be between 1 and 100"}), 400
+
+        result = search_spherex_observations(
+            ra=ra,
+            dec=dec,
+            radius_arcsec=radius,
+            limit=limit
+        )
+
+        return jsonify(result)
+
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "Please provide valid RA and DEC coordinates."
+        }), 400
+
+    except Exception as error:
+        print("SPHEREx API error:", repr(error))
+
+        return jsonify({
+            "error": "Could not retrieve observations from NASA/IPAC.",
+            "details": str(error)
+        }), 502
+@app.route("/api/observations/matched")
+def matched_observations():
+
+    try:
+        ra = float(request.args.get("ra"))
+        dec = float(request.args.get("dec"))
+        radius = float(request.args.get("radius", 1))
+        limit = int(request.args.get("limit", 50))
+
+        if not 0 <= ra <= 360:
+            return jsonify({"error": "Invalid RA"}), 400
+
+        if not -90 <= dec <= 90:
+            return jsonify({"error": "Invalid DEC"}), 400
+
+        if not 0 < radius <= 3600:
+            return jsonify({"error": "Invalid search radius"}), 400
+
+        if not 1 <= limit <= 100:
+            return jsonify({"error": "Invalid result limit"}), 400
+
+        result = search_spherex_observations(
+            ra=ra,
+            dec=dec,
+            radius_arcsec=radius,
+            limit=limit
+        )
+
+        grouped = group_observations(
+            result["observations"]
+        )
+
+        return jsonify({
+            "mission": "SPHEREx",
+            "archive_total": result["total_found"],
+            "returned_products": result["returned"],
+            "matching_results": grouped
+        })
+
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "Please provide valid coordinates."
+        }), 400
+
+    except Exception as error:
+        print("Matching error:", repr(error))
+
+        return jsonify({
+            "error": "Could not group observations.",
+            "details": str(error)
+        }), 500
+@app.route("/api/fits/summary")
+def fits_summary():
+
+    try:
+        result = get_fits_summary()
+        return jsonify(result)
+
+    except FileNotFoundError as error:
+        return jsonify({"error": str(error)}), 404
+
+    except Exception as error:
+        print("FITS processing error:", repr(error))
+
+        return jsonify({
+            "error": "Could not process SPHEREx FITS data.",
+            "details": str(error)
+        }), 500
+
+if __name__ == "__main__":
+
+    print("SPHERESCAPE is starting...")
+    print("Homepage: http://127.0.0.1:5000")
+    print("Observation API: http://127.0.0.1:5000/api/observations")
+
+    app.run(debug=True)

@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPHERESCAPE | Deep Space Observatory</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg: #02040a;
+    --panel: #070d19;
+    --panel2: #0a1424;
+    --blue: #176bce;
+    --cyan: #55baff;
+    --white: #e4edf9;
+    --muted: #71839e;
+    --border: rgba(67, 130, 205, 0.16);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background:
+        radial-gradient(ellipse at 50% 0%, #0a1930 0%, transparent 45%),
+        #02040a;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    opacity: .13;
+    background-image:
+        linear-gradient(rgba(50,100,160,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(50,100,160,.08) 1px, transparent 1px);
+    background-size: 70px 70px;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.48) 100%);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* NAVIGATION */
+
+.navbar {
+    height: 74px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 20;
+    background: rgba(2, 4, 10, .88);
+    backdrop-filter: blur(22px);
+    border-bottom: 1px solid rgba(67,130,205,.13);
+}
+
+.logo {
+    font: 700 19px 'Orbitron', sans-serif;
+    letter-spacing: 3px;
+}
+
+.logo span {
+    color: #5aaeff;
+}
+
+.navlinks {
+    display: flex;
+    gap: 35px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #7588a3;
+}
+
+.navlinks a {
+    transition: .3s;
+}
+
+.navlinks a:hover {
+    color: #71c5ff;
+    text-shadow: 0 0 15px #168cff;
+}
+
+.navright {
+    color: #6cbaff;
+    font: 10px 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    border: 1px solid rgba(70,145,220,.25);
+    padding: 11px 16px;
+    background: rgba(10,30,55,.3);
+}
+
+/* HERO */
+
+.hero {
+    min-height: 760px;
+    padding: 180px 10% 110px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background:
+        linear-gradient(90deg, #02040a 0%, rgba(2,4,10,.94) 28%, rgba(2,4,10,.45) 75%, rgba(2,4,10,.2)),
+        linear-gradient(0deg, #02040a 0%, transparent 45%),
+        url("https://d2pn8kiwq2w21t.cloudfront.net/original_images/e1a-SPHEREx_all_sky_stars_and_gas-dust.jpg")
+        center / cover no-repeat;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 20%;
+    left: 0;
+    width: 3px;
+    height: 220px;
+    background: linear-gradient(transparent, #168cff, transparent);
+    box-shadow: 0 0 25px #168cff;
+}
+
+.hero-content {
+    max-width: 720px;
+    position: relative;
+    z-index: 2;
+}
+
+.eyebrow {
+    color: #62baff;
+    font: 10px 'Orbitron', sans-serif;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+}
+
+.live-dot {
+    display: inline-block;
+    height: 7px;
+    width: 7px;
+    background: #52baff;
+    border-radius: 50%;
+    margin-right: 12px;
+    box-shadow: 0 0 15px #168cff;
+}
+
+h1 {
+    font: 700 clamp(48px, 7vw, 88px)/1.1 'Orbitron', sans-serif;
+    letter-spacing: -4px;
+}
+
+h1 span {
+    color: #5caeff;
+    background: linear-gradient(100deg, #e5f3ff, #58b8ff, #1559ad);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    max-width: 540px;
+    margin-top: 28px;
+    line-height: 2;
+    color: #8799b3;
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 38px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 16px 24px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.primary {
+    background: #0b3260;
+    color: #bfe5ff;
+    border: 1px solid #216db7;
+    box-shadow: 0 0 25px rgba(15,100,190,.12);
+}
+
+.primary:hover {
+    background: #104b85;
+    box-shadow: 0 0 30px rgba(22,140,255,.3);
+    transform: translateY(-3px);
+}
+
+.secondary {
+    border: 1px solid rgba(110,160,220,.25);
+    background: rgba(3,9,19,.7);
+    color: #9eb3cf;
+}
+
+.secondary:hover {
+    border-color: #398bd4;
+    color: #70c5ff;
+}
+
+.hero-coordinates {
+    position: absolute;
+    bottom: 45px;
+    right: 7%;
+    color: #526a89;
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+}
+
+/* SECTIONS */
+
+.section {
+    max-width: 1350px;
+    margin: auto;
+    padding: 95px 7%;
+    position: relative;
+    z-index: 2;
+}
+
+.section-label {
+    color: #4f9ce5;
+    font: 10px 'Orbitron', sans-serif;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+}
+
+h2 {
+    font: 600 30px 'Orbitron', sans-serif;
+    letter-spacing: -1px;
+    line-height: 1.4;
+}
+
+.subheading {
+    color: #71839e;
+    font-size: 12px;
+    line-height: 2;
+    margin-top: 15px;
+    max-width: 650px;
+}
+
+/* PANELS */
+
+.glass {
+    background: linear-gradient(145deg, rgba(9,19,35,.96), rgba(4,9,18,.98));
+    border: 1px solid rgba(68,127,190,.17);
+    border-radius: 5px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 20px 65px rgba(0,0,0,.35);
+}
+
+.dashboard {
+    margin-top: 38px;
+    padding: 24px;
+    position: relative;
+}
+
+.dashboard::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 25px;
+    width: 90px;
+    height: 2px;
+    background: #3b9bff;
+    box-shadow: 0 0 15px #168cff;
+}
+
+.dashboard-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 23px;
+}
+
+.dashboard-title {
+    font: 600 11px 'Orbitron', sans-serif;
+    letter-spacing: 1.5px;
+}
+
+.tag {
+    color: #6cbaff;
+    border: 1px solid rgba(70,145,220,.25);
+    padding: 9px 13px;
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    background: rgba(10,35,65,.25);
+}
+
+.observation {
+    width: 100%;
+    display: block;
+    border: 1px solid rgba(75,135,200,.2);
+    cursor: zoom-in;
+    transition: .4s;
+}
+
+.observation:hover {
+    filter: brightness(1.15);
+}
+
+.image-caption {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: #647994;
+    font: 9px 'Orbitron', sans-serif;
+    margin-top: 18px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 16px;
+}
+
+.stat {
+    padding: 23px;
+    border-radius: 4px;
+}
+
+.stat-label {
+    font: 9px 'Orbitron', sans-serif;
+    color: #7186a4;
+    letter-spacing: 1.5px;
+}
+
+.stat-value {
+    font: 600 22px 'Orbitron', sans-serif;
+    margin-top: 13px;
+    color: #dcecff;
+}
+
+.stat-value span {
+    font-size: 9px;
+    color: #5baeff;
+}
+
+/* IMAGE GALLERY */
+
+.gallery {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 18px;
+    margin-top: 38px;
+}
+
+.gallery-card {
+    overflow: hidden;
+    border-radius: 4px;
+    transition: .35s;
+}
+
+.gallery-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(80,165,255,.5);
+    box-shadow: 0 15px 45px rgba(0,65,140,.15);
+}
+
+.gallery-card img {
+    display: block;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    filter: brightness(.8) saturate(.8);
+    transition: .5s;
+}
+
+.gallery-card:hover img {
+    filter: brightness(1);
+    transform: scale(1.035);
+}
+
+.gallery-info {
+    padding: 23px;
+    background: #060d19;
+}
+
+.gallery-info h3 {
+    font: 600 14px 'Orbitron', sans-serif;
+}
+
+.gallery-info p {
+    font-size: 11px;
+    color: #7588a3;
+    line-height: 1.9;
+    margin-top: 12px;
+}
+
+.credit {
+    color: #509fe9;
+    font: 9px 'Orbitron', sans-serif;
+    margin-top: 16px;
+    display: block;
+}
+
+/* MISSION MODULES */
+
+.modules {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 13px;
+    margin-top: 38px;
+}
+
+.module {
+    padding: 25px 21px;
+    min-height: 205px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: .3s;
+}
+
+.module::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #429fff;
+    box-shadow: 0 0 15px #168cff;
+    transition: .35s;
+}
+
+.module:hover {
+    transform: translateY(-5px);
+    border-color: rgba(80,165,255,.4);
+    background: #0a1729;
+}
+
+.module:hover::after {
+    width: 100%;
+}
+
+.module-icon {
+    font-size: 25px;
+    color: #5baeff;
+    text-shadow: 0 0 15px rgba(22,140,255,.6);
+}
+
+.module h3 {
+    font: 600 13px 'Orbitron', sans-serif;
+    margin-top: 25px;
+}
+
+.module p {
+    font-size: 10px;
+    line-height: 1.9;
+    color: #71839e;
+    margin-top: 12px;
+}
+
+.module-status {
+    display: block;
+    color: #4e9de5;
+    font: 8px 'Orbitron', sans-serif;
+    margin-top: 19px;
+    letter-spacing: 1.5px;
+}
+
+/* MISSION BANNER */
+
+.mission-banner {
+    min-height: 330px;
+    border-radius: 4px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+        linear-gradient(90deg, rgba(2,5,12,.98), rgba(2,5,12,.72), rgba(2,5,12,.25)),
+        url("https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia26/pia26352/PIA26352.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1282&w=2280")
+        center / cover;
+    border: 1px solid var(--border);
+}
+
+.mission-banner h2 {
+    max-width: 600px;
+}
+
+.mission-banner p {
+    color: #91a5bf;
+    font-size: 12px;
+    line-height: 2;
+    max-width: 520px;
+    margin-top: 17px;
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid rgba(67,130,205,.13);
+    padding: 40px 7%;
+    text-align: center;
+    color: #566b86;
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    line-height: 2.5;
+    position: relative;
+    z-index: 6;
+    background: #02040a;
+}
+
+footer strong {
+    color: #62baff;
+}
+
+/* IMAGE LIGHTBOX */
+
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0,2,8,.97);
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    cursor: zoom-out;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 95%;
+    max-height: 90vh;
+    object-fit: contain;
+    border: 1px solid rgba(75,150,230,.3);
+    box-shadow: 0 0 50px rgba(0,80,180,.15);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:850px) {
+    .modules {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .navlinks {
+        gap: 14px;
+    }
+}
+
+@media(max-width:600px) {
+    .navbar {
+        padding: 0 5%;
+    }
+
+    .navlinks {
+        display: none;
+    }
+
+    .hero {
+        min-height: 650px;
+        padding: 145px 7% 100px;
+    }
+
+    h1 {
+        letter-spacing: -2px;
+    }
+
+    .section {
+        padding: 65px 6%;
+    }
+
+    .stats,
+    .gallery,
+    .modules {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-banner {
+        padding: 28px;
+    }
+
+    h2 {
+        font-size: 23px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a class="logo" href="#">SPHERE<span>SCAPE</span></a>
+
+    <div class="navlinks">
+        <a href="#observatory">Observatory</a>
+        <a href="#gallery">Discover</a>
+        <a href="#modules">Explore</a>
+        <a href="#mission">Mission</a>
+    </div>
+
+    <div class="navright">ASTRAVIA / 2026</div>
+</nav>
+
+<header class="hero">
+    <div class="hero-content">
+        <div class="eyebrow">
+            <span class="live-dot"></span>
+            DEEP SPACE OBSERVATORY
+        </div>
+
+        <h1>Beyond what<br>the <span>eyes can see.</span></h1>
+
+        <p>
+            The universe has more than one way of telling its story.
+            Explore real SPHEREx infrared observations, travel across
+            wavelengths, and uncover the hidden structures of our cosmos.
+        </p>
+
+        <div class="actions">
+            <a href="#observatory" class="btn primary">ENTER OBSERVATORY ↗</a>
+            <a href="#gallery" class="btn secondary">DISCOVER THE COSMOS</a>
+        </div>
+    </div>
+
+    <div class="hero-coordinates">NASA / SPHEREx / INFRARED SKY SURVEY</div>
+</header>
+
+<section class="section" id="observatory">
+    <div class="section-label">01 — OBSERVATORY DATA</div>
+    <h2>Your window into the infrared universe.</h2>
+    <p class="subheading">
+        A real SPHEREx Level 2 observation, downloaded from the
+        NASA/IPAC archive and visualized from its original FITS data.
+    </p>
+
+    <div class="glass dashboard">
+        <div class="dashboard-top">
+            <div class="dashboard-title">◉ OBSERVATION / FIRST LIGHT</div>
+            <div class="tag">SPHEREx · QR2 · LEVEL 2</div>
+        </div>
+
+        <img
+            class="observation"
+            src="/first-light"
+            alt="Our processed SPHEREx observation"
+            onclick="openLightbox(this.src)"
+        >
+
+        <div class="image-caption">
+            <span>OBSERVATION ID: 2025W43_1A_0516_1</span>
+            <span>2040 × 2040 PIXELS</span>
+            <span>IMAGE / FITS VISUALIZATION</span>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="glass stat">
+            <div class="stat-label">IMAGE RESOLUTION</div>
+            <div class="stat-value">2040 × 2040</div>
+        </div>
+        <div class="glass stat">
+            <div class="stat-label">DATA RELEASE</div>
+            <div class="stat-value">QR2 <span>LEVEL 2</span></div>
+        </div>
+        <div class="glass stat">
+            <div class="stat-label">INSTRUMENT</div>
+            <div class="stat-value">SPHEREx</div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="gallery">
+    <div class="section-label">02 — COSMIC GALLERY</div>
+    <h2>The universe, in infrared.</h2>
+    <p class="subheading">
+        These NASA mission images show how different infrared wavelengths
+        reveal structures that ordinary visible-light images can miss.
+    </p>
+
+    <div class="gallery">
+        <div class="glass gallery-card">
+            <img
+                src="https://d2pn8kiwq2w21t.cloudfront.net/original_images/e1a-SPHEREx_all_sky_stars_and_gas-dust.jpg"
+                alt="SPHEREx first all-sky map"
+            >
+            <div class="gallery-info">
+                <h3>The first all-sky map</h3>
+                <p>
+                    A panoramic view of the sky mapped by SPHEREx.
+                    Infrared colors reveal stars, galaxies, hot gas and cosmic dust.
+                </p>
+                <span class="credit">IMAGE CREDIT: NASA / JPL-CALTECH</span>
+            </div>
+        </div>
+
+        <div class="glass gallery-card">
+            <img
+                src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia26/pia26352/PIA26352.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1282&w=2280"
+                alt="SPHEREx dust cloud observation"
+            >
+            <div class="gallery-info">
+                <h3>Hidden cosmic dust</h3>
+                <p>
+                    SPHEREx revealed a dust cloud in one infrared wavelength
+                    that disappears in another.
+                </p>
+                <span class="credit">IMAGE CREDIT: NASA / JPL-CALTECH</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="modules">
+    <div class="section-label">03 — MISSION INTERFACE</div>
+    <h2>Choose your destination.</h2>
+    <p class="subheading">
+        Explore the tools we're building to make SPHEREx data accessible
+        and understandable.
+    </p>
+
+    <div class="modules">
+        <div class="glass module">
+            <div class="module-icon">⌖</div>
+            <h3>Cosmic Explorer</h3>
+            <p>Navigate real observations and explore regions of the infrared sky.</p>
+            <span class="module-status">IN DEVELOPMENT</span>
+        </div>
+
+        <div class="glass module">
+            <div class="module-icon">◷</div>
+            <h3>Time Traveller</h3>
+            <p>Compare observations from different dates and investigate changes.</p>
+            <span class="module-status">IN DEVELOPMENT</span>
+        </div>
+
+        <div class="glass module">
+            <div class="module-icon">✧</div>
+            <h3>Change Detector</h3>
+            <p>Highlight image differences while accounting for alignment and artifacts.</p>
+            <span class="module-status">IN DEVELOPMENT</span>
+        </div>
+
+        <div class="glass module">
+            <div class="module-icon">◉</div>
+            <h3>Spectral Explorer</h3>
+            <p>Explore how infrared wavelengths reveal different cosmic features.</p>
+            <span class="module-status">IN DEVELOPMENT</span>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="mission">
+    <div class="mission-banner">
+        <div class="section-label">04 — THE BIGGER PICTURE</div>
+        <h2>There is an entire universe hiding beyond visible light.</h2>
+        <p>
+            SPHERESCAPE is an exploration platform by ASTRAVIA,
+            designed to bring real astronomical observations closer
+            to everyone. One wavelength, one observation, one discovery at a time.
+        </p>
+    </div>
+</section>
+
+<footer>
+    <strong>SPHERESCAPE</strong> · ASTRAVIA<br>
+    Built for NASA Space Apps Challenge 2026<br>
+    NASA imagery credited to NASA / JPL-Caltech.
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="expandedImage" src="" alt="Expanded astronomical observation">
+</div>
+
+<script>
+function openLightbox(src) {
+    document.getElementById("expandedImage").src = src;
+    document.getElementById("lightbox").classList.add("active");
+}
+
+function closeLightbox() {
+    document.getElementById("lightbox").classList.remove("active");
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") closeLightbox();
+});
+</script>
+
+</body>
+</html>
