@@ -79,6 +79,8 @@ Open http://127.0.0.1:5000.
 | `/api/observations?ra=<deg>&dec=<deg>&radius=<arcsec>&limit=<n>` | Searches the IRSA SPHEREx archive (`spherex_qr2`) at a sky position. Products are returned newest first. |
 | `/api/observations/matched?ra=...&dec=...` | The same search, grouped into one entry per observation, plus an `archive_summary` |
 | `/api/resolve?name=<object>` | Turns an object name into RA/Dec. Exact names and catalogue IDs (`M31`, `NGC 224`) go through CDS Sesame. Anything else falls back to the closest SIMBAD match, so `Canis Major` finds the Canis Major Dwarf Galaxy; `exact: false` and `alternatives` say when that happened. |
+| `/api/science` | Precomputed analysis results for the "What we found" section: `results/psf_zones.json` and `results/source_validation.json` |
+| `/figures/<name>` | Images from `results/figures/` |
 | `/api/fits/summary` | Pixel stats, metadata, WCS centre, flags and variance for the local FITS file |
 
 Example: `http://127.0.0.1:5000/api/observations/matched?ra=10.68&dec=41.27&radius=10`
@@ -91,19 +93,36 @@ The archive search needs internet access and usually takes 5–10 seconds, somet
 
 ## 4. Run the science pipeline
 
-Many scripts call `plt.show()`. Close the plot window for the script to finish. Outputs go to `data/raw/`, and the final figures go to `results/figures/`.
+Many scripts call `plt.show()`. Close the plot window for the script to finish, or run without windows by setting `MPLBACKEND=Agg` first. Outputs go to `data/raw/`; final figures and the small JSON files the website reads go to `results/`.
 
 **Source detection**
-1. `detect_sources.py` finds peaks above SNR 5 after masking bad quality flags. It writes `source_candidates.csv`.
-2. `inspect_candidate_cutouts.py` writes `results/figures/top_candidate_cutouts.png`.
-3. `audit_source_candidates.py` summarises the candidate catalogue.
+1. `detect_sources.py` writes `source_candidates.csv`. It masks bad pixels (including `TRANSIENT` and `OUTLIER`), subtracts the sky background, and measures the noise from the image itself. It then keeps peaks at 5σ or more that have at least one neighbouring pixel above 2σ.
+2. `validate_sources_2mass.py` checks the detections against the 2MASS star catalogue (fetched from IRSA once and cached) and writes `results/source_validation.json`.
+3. `inspect_candidate_cutouts.py` writes `results/figures/top_candidate_cutouts.png`.
+4. `audit_source_candidates.py` summarises the candidate catalogue.
+
+Current result for observation `2026W20_2A_0191_4` (detector 2, a crowded Milky Way field in Cygnus):
+
+| | Old detector | New detector |
+|---|---|---|
+| Detections | ~135,000 | 134,408 |
+| On a 2MASS star (J < 15) within 1.5 px | 59% | **73%** |
+| 2MASS stars recovered, J 13–14 | 77% | **92%** |
+
+Random positions land on a 2MASS star 19% of the time, so 19% is the chance level. The strongest 10,000 detections match 99.6%, in both versions. The old detector skipped background subtraction, and after subtraction the real pixel scatter is ~5× what the `VARIANCE` layer predicts, so its "5σ" was really about 1σ. Single-pixel detections match no better than chance (21%), which is why they're rejected. Known limit: the brightest stars (J < 10) are only 73% recovered, because their saturated centres are masked.
+
+**Website data:** after the PSF steps below, `export_psf_web_data.py` writes `results/psf_zones.json`, which feeds the interactive detector map.
 
 **PSF vs wavelength.** SPHEREx's filter wavelength changes across the detector, so each of the 121 PSF zones sees a different wavelength.
 1. `analyze_psf.py` measures peak intensity and central energy fraction for each PSF zone. It writes `psf_analysis.csv`.
 2. `map_psf_wavelength.py` maps each zone to a wavelength using `WCS-WAVE`. It writes `psf_wavelength_mapping.csv`.
 3. `map_psf_calibrated.py` remaps using the calibration file `spectral_wcs_D2.fits`. It writes `psf_calibrated_mapping.csv`.
-4. `plot_calibrated_maps.py` and `plot_combined_psf.py` write the figures in `results/figures/`.
-5. `validate_psf_correlations.py` and `check_spatial_residuals.py` test whether the correlations survive after removing position-on-detector trends.
+4. `analyze_calibrated_psf.py` computes raw and position-corrected correlations. It writes `calibrated_psf_results.csv`.
+5. `plot_calibrated_maps.py` and `plot_combined_psf.py` write the figures in `results/figures/`.
+6. `validate_psf_correlations.py` and `check_spatial_residuals.py` test whether the correlations survive after removing position-on-detector trends.
+7. `export_psf_web_data.py` bundles the zones and correlations into `results/psf_zones.json` for the website.
+
+What holds up: **longer-wavelength zones keep less light in the PSF core.** The correlation is −0.80 raw and −0.29 to −0.49 after linear, quadratic or cubic position corrections, all significant after Bonferroni correction. Wavelength vs **peak** intensity changes sign depending on the correction, so it isn't claimed.
 
 **Inspection helpers** (run any time after downloading the data): `inspect_spherex_headers.py`, `inspect_flags.py`, `decode_flags.py`, `sky_coordinates.py`, `visualize_spherex.py`, `validate_spectral_wcs.py`, `compare_wavelength_maps.py`.
 
@@ -124,6 +143,7 @@ frontend/templates/
   index.html              Landing page
 data/processed/           Committed images served by the app
 results/figures/          Committed analysis figures
+results/*.json            Small analysis results served at /api/science
 *.py                      Science scripts (see section 4)
 ```
 
@@ -141,9 +161,11 @@ The other three are **in development**:
 - **Change Detector**: highlight differences between aligned observations.
 - **Spectral Explorer**: show how each wavelength reveals different features.
 
+Section 05 of the page, **What we found**, shows the team's own analysis: an interactive map of PSF sharpness and wavelength across the detector, and the source-detection results checked against 2MASS.
+
 Known issues:
-- The web app and the scripts use two different observations (see section 2).
-- The source detector doesn't mask the `TRANSIENT` or `OUTLIER` flags and has no minimum source size. Many top candidates are single-pixel spikes and may be cosmic rays or hot pixels.
+- The web app's sample image and the scripts use two different observations (see section 2).
+- Source detection misses some of the brightest stars, because their saturated centres are masked.
 
 ---
 

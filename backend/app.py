@@ -1,7 +1,9 @@
 
 from pathlib import Path
 
-from flask import Flask, render_template, send_file, jsonify, request
+import json
+
+from flask import Flask, render_template, send_file, send_from_directory, jsonify, request
 
 from astropy.coordinates import SkyCoord
 from astropy.coordinates.name_resolve import NameResolveError, sesame_url
@@ -205,6 +207,34 @@ def resolve_name():
         "dec": best["dec"],
         "alternatives": matches[1:]
     })
+
+
+@app.route("/api/science")
+def science_results():
+    """Precomputed analysis results (see export_psf_web_data.py and
+    validate_sources_2mass.py). Missing pieces come back as null."""
+
+    results_dir = PROJECT_DIR / "results"
+    payload = {}
+
+    for key, filename in [
+        ("psf", "psf_zones.json"),
+        ("sources", "source_validation.json")
+    ]:
+        path = results_dir / filename
+        payload[key] = (
+            json.loads(path.read_text(encoding="utf-8"))
+            if path.exists() else None
+        )
+
+    return jsonify(payload)
+
+
+@app.route("/figures/<path:filename>")
+def figure(filename):
+    """Serve images from results/figures/ (send_from_directory blocks ../)."""
+
+    return send_from_directory(PROJECT_DIR / "results" / "figures", filename)
 
 
 @app.route("/api/fits/summary")
