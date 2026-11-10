@@ -1,0 +1,52 @@
+{
+  "observation": "2026W20_2A_0191_4",
+  "detections": 134408,
+  "catalogue": "2MASS Point Source Catalog, J < 15",
+  "catalogue_stars_in_image": 127272,
+  "match_radius_pixels": 1.5,
+  "chance_match_rate": 0.1899,
+  "match_rate_all": 0.7309907148384025,
+  "match_rate_top": {
+    "100": 1.0,
+    "1000": 0.999,
+    "10000": 0.9956
+  },
+  "completeness_by_j_mag": [
+    {
+      "j_min": null,
+      "j_max": 10,
+      "stars": 2101,
+      "recovered": 0.7263207996192289
+    },
+    {
+      "j_min": 10,
+      "j_max": 11,
+      "stars": 3004,
+      "recovered": 0.9923435419440746
+    },
+    {
+      "j_min": 11,
+      "j_max": 12,
+      "stars": 6912,
+      "recovered": 0.9798900462962963
+    },
+    {
+      "j_min": 12,
+      "j_max": 13,
+      "stars": 15358,
+      "recovered": 0.9567000911577028
+    },
+    {
+      "j_min": 13,
+      "j_max": 14,
+      "stars": 32392,
+      "recovered": 0.9188688565077797
+    },
+    {
+      "j_min": 14,
+      "j_max": 15.0,
+      "stars": 67505,
+      "recovered": 0.8050811051033256
+    }
+  ]
+}

@@ -523,6 +523,776 @@ h2 {
     margin-top: 17px;
 }
 
+/* COSMIC EXPLORER */
+
+[hidden] {
+    display: none !important;
+}
+
+a.module {
+    display: block;
+}
+
+.module-status.live {
+    color: #7fe0a8;
+}
+
+.explorer-panel {
+    display: grid;
+    gap: 22px;
+}
+
+.explorer-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+    flex: 1 1 120px;
+}
+
+.field.grow {
+    flex: 4 1 260px;
+}
+
+.field span,
+.presets-label,
+.panel-title {
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1.5px;
+    color: #7186a4;
+}
+
+.field input {
+    width: 100%;
+    background: rgba(2, 6, 14, .85);
+    border: 1px solid rgba(75, 135, 200, .25);
+    color: var(--white);
+    font: 500 14px 'Inter', sans-serif;
+    padding: 13px 14px;
+    border-radius: 3px;
+    outline: none;
+    transition: .25s;
+}
+
+.field input:focus {
+    border-color: #3b9bff;
+    box-shadow: 0 0 0 3px rgba(22, 140, 255, .15);
+}
+
+button.btn {
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+button.btn:disabled {
+    opacity: .45;
+    cursor: wait;
+    transform: none;
+}
+
+.presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    align-items: center;
+}
+
+.presets-label {
+    margin-right: 6px;
+}
+
+.chip {
+    background: rgba(10, 35, 65, .3);
+    border: 1px solid rgba(70, 145, 220, .25);
+    color: #9fd3ff;
+    font: 500 11px 'Inter', sans-serif;
+    padding: 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.chip:hover {
+    border-color: #3b9bff;
+    color: #d6eeff;
+}
+
+.chip:disabled {
+    opacity: .45;
+    cursor: wait;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border);
+}
+
+.explorer-status {
+    min-height: 18px;
+    font-size: 12px;
+    color: #8fb6dd;
+    line-height: 1.6;
+}
+
+.explorer-status.error {
+    color: #ff8f8f;
+}
+
+.explorer-match {
+    display: grid;
+    gap: 12px;
+    padding: 14px 16px;
+    border-left: 2px solid #3b9bff;
+    background: rgba(10, 35, 65, .25);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c4d8ee;
+}
+
+.explorer-match strong {
+    color: #fff;
+}
+
+.explorer-match .presets {
+    gap: 7px;
+}
+
+.spinner {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(90, 174, 255, .3);
+    border-top-color: #5aaeff;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: -1px;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#explorer-results {
+    scroll-margin-top: 90px;
+}
+
+.results-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 38px;
+}
+
+.results-title {
+    font: 600 18px 'Orbitron', sans-serif;
+}
+
+.explorer-stats {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.stat-value.small {
+    font-size: 17px;
+}
+
+.panel {
+    margin-top: 16px;
+    padding: 24px;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.panel-note {
+    font-size: 11px;
+    color: #71839e;
+}
+
+/* Wavelength coverage */
+
+.spectrum {
+    position: relative;
+    height: 26px;
+    border-radius: 3px;
+    background: rgba(2, 6, 14, .85);
+    border: 1px solid rgba(75, 135, 200, .18);
+    overflow: hidden;
+}
+
+.spectrum-segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid #02040a;
+}
+
+.spectrum-axis {
+    position: relative;
+    height: 14px;
+    font: 9px 'Orbitron', sans-serif;
+    color: #566b86;
+    margin-top: 8px;
+}
+
+.spectrum-axis span {
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.spectrum-axis span:last-child {
+    transform: translateX(-100%);
+}
+
+.band-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.band {
+    padding: 12px;
+    border-radius: 3px;
+    background: rgba(2, 6, 14, .6);
+    border: 1px solid rgba(75, 135, 200, .15);
+    border-top: 3px solid var(--band);
+}
+
+.band.missing {
+    border-top-color: #1b2638;
+    opacity: .55;
+}
+
+.band-name {
+    font: 600 11px 'Orbitron', sans-serif;
+}
+
+.band-range {
+    font-size: 10px;
+    color: #71839e;
+    margin-top: 5px;
+}
+
+.band-count {
+    font: 600 16px 'Orbitron', sans-serif;
+    margin-top: 10px;
+    color: #dcecff;
+}
+
+.band-count span {
+    font: 400 9px 'Inter', sans-serif;
+    color: #71839e;
+    margin-left: 4px;
+}
+
+/* Visit timeline */
+
+.timeline {
+    position: relative;
+    height: 120px;
+    border-bottom: 1px solid rgba(75, 135, 200, .3);
+}
+
+.timeline-bar {
+    position: absolute;
+    bottom: 0;
+    width: 5px;
+    margin-left: -2px;
+    min-height: 3px;
+    background: linear-gradient(0deg, #176bce, #6cc4ff);
+    border-radius: 2px 2px 0 0;
+    box-shadow: 0 0 10px rgba(22, 140, 255, .35);
+}
+
+.timeline-labels {
+    position: relative;
+    height: 22px;
+    margin-top: 8px;
+}
+
+.timeline-labels span {
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font: 9px 'Orbitron', sans-serif;
+    color: #566b86;
+}
+
+.timeline-labels span.first {
+    transform: none;
+}
+
+.timeline-labels span.last {
+    transform: translateX(-100%);
+}
+
+/* Observation list */
+
+.obs-list {
+    display: grid;
+    gap: 8px;
+}
+
+.obs-row {
+    display: grid;
+    grid-template-columns: 170px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 13px 15px;
+    border-radius: 3px;
+    background: rgba(2, 6, 14, .55);
+    border: 1px solid rgba(75, 135, 200, .12);
+}
+
+.obs-date {
+    font: 500 12px 'Inter', sans-serif;
+    color: #dcecff;
+}
+
+.obs-date small {
+    display: block;
+    font-size: 10px;
+    color: #71839e;
+    margin-top: 3px;
+}
+
+.obs-id {
+    font: 10px 'Orbitron', sans-serif;
+    color: #7f95b3;
+    overflow-wrap: anywhere;
+}
+
+.obs-products {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.product-link {
+    font: 500 11px 'Inter', sans-serif;
+    padding: 7px 10px;
+    border-radius: 3px;
+    border: 1px solid rgba(75, 135, 200, .25);
+    border-left: 3px solid var(--band);
+    color: #b9dcff;
+    white-space: nowrap;
+    transition: .25s;
+}
+
+.product-link:hover {
+    background: rgba(22, 107, 206, .18);
+    color: #fff;
+}
+
+.show-more {
+    margin-top: 14px;
+}
+
+.empty-state {
+    margin-top: 38px;
+    padding: 28px;
+    text-align: center;
+    color: #8799b3;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* SKY DOME */
+
+.dome-stage {
+    position: relative;
+    height: min(560px, 70vw);
+    min-height: 360px;
+    background: #000;
+    border: 1px solid rgba(75, 135, 200, .25);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dome-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#dome-overlay {
+    touch-action: none;
+    cursor: crosshair;
+}
+
+#dome-overlay.dragging {
+    cursor: grabbing;
+}
+
+#dome-overlay:focus-visible {
+    outline: 2px solid #3b9bff;
+    outline-offset: -2px;
+}
+
+.dome-hint,
+.dome-readout,
+.dome-fov {
+    position: absolute;
+    pointer-events: none;
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1.2px;
+    color: #9fc4e8;
+    text-shadow: 0 1px 3px #000;
+}
+
+.dome-hint {
+    top: 14px;
+    left: 16px;
+    right: 16px;
+}
+
+.dome-readout {
+    left: 16px;
+    bottom: 14px;
+}
+
+.dome-fov {
+    right: 16px;
+    bottom: 14px;
+}
+
+.dome-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #8fb6dd;
+    background: #000;
+}
+
+.dome-caption {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 10px;
+    font-size: 10px;
+    color: #566b86;
+}
+
+/* SCIENCE RESULTS */
+
+.science-panel {
+    margin-top: 38px;
+}
+
+.science-text {
+    color: #8799b3;
+    font-size: 12px;
+    line-height: 2;
+    max-width: 760px;
+}
+
+.science-text strong {
+    color: #dcecff;
+    font-weight: 600;
+}
+
+.metric-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 22px 0;
+}
+
+.metric-toggle .chip[aria-pressed="true"] {
+    background: #0b3260;
+    border-color: #3b9bff;
+    color: #fff;
+}
+
+.psf-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+}
+
+.psf-map {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 2px;
+    background: #02040a;
+    padding: 2px;
+    border: 1px solid rgba(75, 135, 200, .2);
+}
+
+.psf-cell {
+    aspect-ratio: 1;
+    border: 0;
+    padding: 0;
+    cursor: crosshair;
+    border-radius: 1px;
+}
+
+.psf-cell.active,
+.psf-cell:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -1px;
+    position: relative;
+    z-index: 1;
+}
+
+.psf-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    font: 10px 'Inter', sans-serif;
+    color: #8799b3;
+}
+
+.legend-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #0e2240, #8fd0ff);
+}
+
+.psf-axis-note {
+    margin-top: 8px;
+    font-size: 10px;
+    color: #566b86;
+}
+
+.psf-readout {
+    padding: 18px 20px;
+    background: rgba(2, 6, 14, .6);
+    border: 1px solid rgba(75, 135, 200, .15);
+    border-radius: 3px;
+    font-size: 12px;
+    color: #8799b3;
+    line-height: 1.9;
+    min-height: 200px;
+}
+
+.psf-readout dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 16px;
+    margin: 12px 0 0;
+}
+
+.psf-readout dt {
+    color: #71839e;
+}
+
+.psf-readout dd {
+    margin: 0;
+    color: #dcecff;
+    font-variant-numeric: tabular-nums;
+}
+
+.readout-title {
+    font: 600 12px 'Orbitron', sans-serif;
+    color: #dcecff;
+}
+
+.finding {
+    margin-top: 24px;
+    padding: 16px 18px;
+    border-left: 2px solid #3b9bff;
+    background: rgba(10, 35, 65, .25);
+    font-size: 12px;
+    line-height: 1.9;
+    color: #c4d8ee;
+    max-width: 900px;
+}
+
+.finding strong {
+    color: #fff;
+}
+
+.completeness {
+    margin-top: 26px;
+    display: grid;
+    gap: 9px;
+    max-width: 640px;
+}
+
+.completeness-row {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 46px;
+    gap: 14px;
+    align-items: center;
+    font-size: 11px;
+    color: #8799b3;
+}
+
+.completeness-track {
+    height: 10px;
+    background: rgba(2, 6, 14, .85);
+    border-radius: 2px;
+}
+
+.completeness-bar {
+    height: 100%;
+    background: #3b9bff;
+    border-radius: 0 3px 3px 0;
+}
+
+.completeness-row .value {
+    text-align: right;
+    color: #dcecff;
+    font-variant-numeric: tabular-nums;
+}
+
+.science-figure {
+    margin: 30px 0 0;
+}
+
+.science-figure img {
+    width: 100%;
+    display: block;
+    cursor: zoom-in;
+    border: 1px solid rgba(75, 135, 200, .2);
+}
+
+.science-figure figcaption {
+    margin-top: 10px;
+    font-size: 11px;
+    line-height: 1.8;
+    color: #71839e;
+}
+
+/* IMAGE VIEWER */
+
+.viewer-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 28px;
+    margin: 22px 0 16px;
+}
+
+.viewer-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+}
+
+.viewer-group .chip[aria-pressed="true"] {
+    background: #0b3260;
+    border-color: #3b9bff;
+    color: #fff;
+}
+
+.chip.square {
+    width: 34px;
+    padding: 8px 0;
+    text-align: center;
+}
+
+.viewer-stage {
+    position: relative;
+    height: min(640px, 75vw);
+    min-height: 320px;
+    background: #000;
+    border: 1px solid rgba(75, 135, 200, .2);
+    overflow: hidden;
+}
+
+.viewer-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+}
+
+.viewer-stage canvas.dragging {
+    cursor: grabbing;
+}
+
+.viewer-stage canvas:focus-visible {
+    outline: 2px solid #3b9bff;
+    outline-offset: -2px;
+}
+
+.viewer-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #8fb6dd;
+}
+
+.viewer-zoom {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 5px 9px;
+    background: rgba(2, 6, 14, .8);
+    border: 1px solid rgba(75, 135, 200, .2);
+    font: 10px 'Inter', sans-serif;
+    color: #8fb6dd;
+    pointer-events: none;
+}
+
+.viewer-readout {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 12px;
+    background: rgba(75, 135, 200, .15);
+    border: 1px solid rgba(75, 135, 200, .15);
+}
+
+.viewer-readout > div {
+    background: #050b16;
+    padding: 12px 14px;
+    min-width: 0;
+}
+
+.viewer-readout .label {
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1.2px;
+    color: #71839e;
+}
+
+.viewer-readout .value {
+    margin-top: 7px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #dcecff;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.viewer-readout .value small {
+    display: block;
+    color: #71839e;
+    font-size: 10px;
+}
+
 /* FOOTER */
 
 footer {
@@ -575,6 +1345,36 @@ footer strong {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .explorer-stats,
+    .band-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .obs-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .obs-products {
+        justify-content: flex-start;
+    }
+
+    .psf-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .viewer-readout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .viewer-readout > div:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .psf-readout {
+        min-height: 0;
+    }
+
     .navlinks {
         gap: 14px;
     }
@@ -608,6 +1408,46 @@ footer strong {
         grid-template-columns: 1fr;
     }
 
+    .explorer-stats,
+    .band-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .explorer-row .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dome-stage {
+        height: 100vw;
+        max-height: 420px;
+        min-height: 300px;
+    }
+
+    .dome-hint {
+        font-size: 8px;
+    }
+
+    /* Stack the two bottom labels so they don't collide. */
+    .dome-readout {
+        bottom: 32px;
+    }
+
+    .dome-fov {
+        left: 16px;
+        right: auto;
+    }
+
+    .completeness-row {
+        grid-template-columns: 96px minmax(0, 1fr) 40px;
+        gap: 10px;
+    }
+
+    .dashboard,
+    .panel {
+        padding: 18px;
+    }
+
     .mission-banner {
         padding: 28px;
     }
@@ -629,6 +1469,7 @@ footer strong {
         <a href="#observatory">Observatory</a>
         <a href="#gallery">Discover</a>
         <a href="#modules">Explore</a>
+        <a href="#explorer">Search</a>
         <a href="#mission">Mission</a>
     </div>
 
@@ -753,12 +1594,12 @@ footer strong {
     </p>
 
     <div class="modules">
-        <div class="glass module">
+        <a class="glass module" href="#explorer">
             <div class="module-icon">⌖</div>
             <h3>Cosmic Explorer</h3>
             <p>Navigate real observations and explore regions of the infrared sky.</p>
-            <span class="module-status">IN DEVELOPMENT</span>
-        </div>
+            <span class="module-status live">● LIVE — LAUNCH ↓</span>
+        </a>
 
         <div class="glass module">
             <div class="module-icon">◷</div>
@@ -783,9 +1624,304 @@ footer strong {
     </div>
 </section>
 
+<section class="section" id="explorer">
+    <div class="section-label">04 — COSMIC EXPLORER</div>
+    <h2>Point SPHEREx anywhere in the sky.</h2>
+    <p class="subheading">
+        Search NASA's live SPHEREx archive by object name or sky
+        coordinates. See when the telescope looked there, which infrared
+        bands it captured, and download the original images.
+    </p>
+
+    <div class="glass dashboard explorer-panel">
+        <form id="name-form" class="explorer-row">
+            <label class="field grow">
+                <span>OBJECT NAME</span>
+                <input id="object-name" type="text" maxlength="100"
+                       placeholder="e.g. M31, Orion Nebula, Canis Major"
+                       autocomplete="off">
+            </label>
+            <button class="btn primary" type="submit">LOOK UP ↗</button>
+        </form>
+
+        <div class="dome-wrap" id="dome-wrap" hidden>
+            <div class="dome-stage" id="dome-stage">
+                <canvas id="dome-gl" aria-hidden="true"></canvas>
+                <canvas id="dome-overlay" tabindex="0"
+                        aria-label="Sky dome. Drag or use arrow keys to look around, plus and minus to zoom, Enter to search the centre of the view."></canvas>
+                <div class="dome-hint">DRAG TO LOOK AROUND · SCROLL OR PINCH TO ZOOM · CLICK ANY SPOT TO SEARCH IT</div>
+                <div class="dome-readout" id="dome-readout"></div>
+                <div class="dome-fov" id="dome-fov"></div>
+                <div class="dome-loading" id="dome-loading">Loading the SPHEREx sky…</div>
+            </div>
+            <div class="dome-caption">
+                <span>Sky: SPHEREx's infrared map of the whole sky (NASA/JPL-Caltech). The bright band is the Milky Way.</span>
+                <span>As seen from Earth: north up, east left.</span>
+            </div>
+        </div>
+
+        <div class="presets" id="presets">
+            <span class="presets-label">OR TRY</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <form id="coord-form" class="explorer-row">
+            <label class="field">
+                <span>RA (DEG)</span>
+                <input id="ra" type="number" step="any" min="0" max="360"
+                       required placeholder="0 – 360">
+            </label>
+            <label class="field">
+                <span>DEC (DEG)</span>
+                <input id="dec" type="number" step="any" min="-90" max="90"
+                       required placeholder="-90 – 90">
+            </label>
+            <label class="field">
+                <span>RADIUS (ARCSEC)</span>
+                <input id="radius" type="number" step="any" min="0.1"
+                       max="3600" value="10" required>
+            </label>
+            <button class="btn secondary" type="submit">SCAN THE SKY</button>
+        </form>
+
+        <div id="explorer-status" class="explorer-status"
+             role="status" aria-live="polite"></div>
+
+        <div id="explorer-match" class="explorer-match" hidden></div>
+    </div>
+
+    <div id="explorer-results" hidden>
+        <div class="results-head">
+            <div class="results-title" id="results-title"></div>
+            <div class="tag" id="results-coords"></div>
+        </div>
+
+        <div class="stats explorer-stats">
+            <div class="glass stat">
+                <div class="stat-label">IMAGES IN ARCHIVE</div>
+                <div class="stat-value" id="stat-images"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">DAYS OBSERVED</div>
+                <div class="stat-value" id="stat-days"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">FIRST SEEN</div>
+                <div class="stat-value small" id="stat-first"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">LAST SEEN</div>
+                <div class="stat-value small" id="stat-last"></div>
+            </div>
+        </div>
+
+        <div class="glass panel">
+            <div class="panel-head">
+                <div class="panel-title">WAVELENGTH COVERAGE · 0.75 – 5.0 µm</div>
+                <div class="panel-note">Each SPHEREx detector sees one slice of the infrared.</div>
+            </div>
+            <div class="spectrum" id="spectrum"></div>
+            <div class="spectrum-axis" id="spectrum-axis"></div>
+            <div class="band-grid" id="band-grid"></div>
+        </div>
+
+        <div class="glass panel">
+            <div class="panel-head">
+                <div class="panel-title">WHEN SPHEREx LOOKED HERE</div>
+                <div class="panel-note">Images taken per day</div>
+            </div>
+            <div class="timeline" id="timeline"></div>
+            <div class="timeline-labels" id="timeline-labels"></div>
+        </div>
+
+        <div class="glass panel">
+            <div class="panel-head">
+                <div class="panel-title">LATEST OBSERVATIONS</div>
+                <div class="panel-note" id="obs-note"></div>
+            </div>
+            <div class="obs-list" id="obs-list"></div>
+            <button class="btn secondary show-more" id="show-more" type="button" hidden>SHOW MORE</button>
+        </div>
+    </div>
+
+    <div class="glass empty-state" id="explorer-empty" hidden></div>
+</section>
+
+<section class="section" id="science">
+    <div class="section-label">05 — WHAT WE FOUND</div>
+    <h2>Our own analysis of a SPHEREx image.</h2>
+    <p class="subheading">
+        We downloaded one SPHEREx image straight from NASA's archive
+        (detector 2, 15 May 2026, pointing at the Milky Way in Cygnus)
+        and analysed it ourselves. Here is what we found.
+    </p>
+
+    <p class="science-text" id="science-missing" hidden>
+        The analysis results aren't available on this server yet.
+        Run the analysis scripts described in the README to create them.
+    </p>
+
+    <div class="glass panel science-panel" id="viewer-panel" hidden>
+        <div class="panel-head">
+            <div class="panel-title">EXPLORE THE IMAGE YOURSELF</div>
+            <div class="panel-note" id="viewer-info"></div>
+        </div>
+        <p class="science-text">
+            This is the full SPHEREx image we analysed: all
+            <strong>4 million pixels</strong>, straight from NASA's data file.
+            <strong>Drag</strong> to move around, <strong>scroll or pinch</strong>
+            to zoom, and <strong>hover or tap</strong> to read any pixel's
+            position in the sky, its brightness and the infrared wavelength it sees.
+        </p>
+
+        <div class="viewer-toolbar">
+            <div class="viewer-group" role="group" aria-label="Colour map">
+                <span class="presets-label">COLOURS</span>
+                <button class="chip" type="button" data-cmap="inferno" aria-pressed="true">Inferno</button>
+                <button class="chip" type="button" data-cmap="viridis" aria-pressed="false">Viridis</button>
+                <button class="chip" type="button" data-cmap="magma" aria-pressed="false">Magma</button>
+                <button class="chip" type="button" data-cmap="grey" aria-pressed="false">Grey</button>
+            </div>
+            <div class="viewer-group" role="group" aria-label="Contrast">
+                <span class="presets-label">CONTRAST</span>
+                <button class="chip" type="button" data-stretch="linear" aria-pressed="false">Bright stars</button>
+                <button class="chip" type="button" data-stretch="asinh" aria-pressed="true">Balanced</button>
+                <button class="chip" type="button" data-stretch="log" aria-pressed="false">Faint detail</button>
+            </div>
+            <div class="viewer-group">
+                <button class="chip" type="button" id="viewer-sources" aria-pressed="false">Circle detected stars</button>
+                <button class="chip square" type="button" id="viewer-zoom-out" aria-label="Zoom out">−</button>
+                <button class="chip square" type="button" id="viewer-zoom-in" aria-label="Zoom in">+</button>
+                <button class="chip" type="button" id="viewer-reset">Reset view</button>
+            </div>
+        </div>
+
+        <div class="viewer-stage" id="viewer-stage">
+            <canvas id="viewer-canvas" tabindex="0"
+                    aria-label="SPHEREx image. Use arrow keys to move, plus and minus to zoom."></canvas>
+            <div class="viewer-loading" id="viewer-loading">Loading the image (4 MB)…</div>
+            <div class="viewer-zoom" id="viewer-zoom" hidden></div>
+        </div>
+
+        <div class="viewer-readout" aria-live="polite">
+            <div>
+                <div class="label">SKY POSITION</div>
+                <div class="value" id="read-sky">Hover over the image</div>
+            </div>
+            <div>
+                <div class="label">PIXEL</div>
+                <div class="value" id="read-pixel">—</div>
+            </div>
+            <div>
+                <div class="label">BRIGHTNESS</div>
+                <div class="value" id="read-value">—</div>
+            </div>
+            <div>
+                <div class="label">WAVELENGTH</div>
+                <div class="value" id="read-wave">—</div>
+            </div>
+            <div>
+                <div class="label">DETECTED STAR</div>
+                <div class="value" id="read-source">—</div>
+            </div>
+        </div>
+
+        <p class="psf-axis-note">
+            The colours aren't real, because infrared has no colour we can see:
+            brighter signal is drawn brighter. Brightness is in MJy/sr, the unit
+            astronomers use for how bright a patch of sky is. Pixel (0, 0) is at the
+            bottom-left. "Circle detected stars" marks the 2,000 strongest of our detections.
+        </p>
+    </div>
+
+    <div class="glass panel science-panel" id="psf-panel" hidden>
+        <div class="panel-head">
+            <div class="panel-title">HOW SHARP IS SPHEREx'S VISION ACROSS THE DETECTOR?</div>
+        </div>
+        <p class="science-text">
+            No telescope shows a star as a perfect dot. It spreads each star
+            into a tiny blur called the <strong>point spread function</strong>.
+            SPHEREx's image files include that blur measured in
+            <strong>121 zones</strong> across the detector. Each zone also sees a
+            slightly different wavelength of infrared light. Hover over or
+            tap a zone to see its numbers.
+        </p>
+
+        <div class="metric-toggle" role="group" aria-label="Colour the map by">
+            <button class="chip" type="button" data-metric="central_fraction" aria-pressed="true">Sharpness</button>
+            <button class="chip" type="button" data-metric="wavelength_um" aria-pressed="false">Wavelength seen</button>
+            <button class="chip" type="button" data-metric="peak_intensity" aria-pressed="false">Peak brightness</button>
+        </div>
+
+        <div class="psf-layout">
+            <div>
+                <div class="psf-map" id="psf-map"></div>
+                <div class="psf-legend">
+                    <span id="legend-min"></span>
+                    <div class="legend-bar"></div>
+                    <span id="legend-max"></span>
+                </div>
+                <div class="psf-axis-note">The detector, 2,040 × 2,040 pixels. Top-left is pixel (0, 0).</div>
+            </div>
+            <div class="psf-readout" id="psf-readout" aria-live="polite"></div>
+        </div>
+
+        <div class="finding" id="psf-finding"></div>
+    </div>
+
+    <div class="glass panel science-panel" id="sources-panel" hidden>
+        <div class="panel-head">
+            <div class="panel-title">FINDING STARS IN ONE IMAGE</div>
+        </div>
+        <p class="science-text">
+            We wrote a detector that removes the sky's background glow, measures
+            the noise, and keeps only clear points of light. Then we checked
+            every detection against <strong>2MASS</strong>, an earlier infrared
+            survey that catalogued hundreds of millions of stars at almost the
+            same wavelengths. We used it as an answer key.
+        </p>
+
+        <div class="stats explorer-stats">
+            <div class="glass stat">
+                <div class="stat-label">SOURCES DETECTED</div>
+                <div class="stat-value" id="src-count"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">ON A KNOWN STAR</div>
+                <div class="stat-value" id="src-match"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">BY CHANCE ALONE</div>
+                <div class="stat-value" id="src-chance"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">STRONGEST 10,000</div>
+                <div class="stat-value" id="src-top"></div>
+            </div>
+        </div>
+
+        <div class="finding" id="src-finding"></div>
+
+        <div class="completeness" id="completeness"></div>
+
+        <figure class="science-figure">
+            <img src="/figures/top_candidate_cutouts.png"
+                 alt="Twelve small image cutouts, each centred on one of the strongest detected stars, with other detected sources circled."
+                 loading="lazy" onclick="openLightbox(this.src)">
+            <figcaption>
+                Close-ups of the 12 strongest detections (green ×). Cyan circles
+                are other sources we found nearby. This part of the Milky Way
+                really is this crowded, with about one catalogued star every 33 pixels.
+                Click to enlarge.
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
 <section class="section" id="mission">
     <div class="mission-banner">
-        <div class="section-label">04 — THE BIGGER PICTURE</div>
+        <div class="section-label">06 — THE BIGGER PICTURE</div>
         <h2>There is an entire universe hiding beyond visible light.</h2>
         <p>
             SPHERESCAPE is an exploration platform by ASTRAVIA,
@@ -818,6 +1954,1849 @@ function closeLightbox() {
 document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") closeLightbox();
 });
+
+/* ===================== SKY DOME ===================== */
+/*
+ * You stand inside the celestial sphere and look out, like in a planetarium.
+ * The sky texture is SPHEREx's all-sky map re-projected to RA/Dec
+ * (build_sky_dome_texture.py). The view uses a stereographic projection,
+ * which keeps shapes undistorted and curves wide views like a dome.
+ * Exposes window.skyDome for Cosmic Explorer to drive.
+ */
+
+(function () {
+
+    const $ = (id) => document.getElementById(id);
+    const DEG = Math.PI / 180;
+
+    const wrap = $("dome-wrap");
+    const stage = $("dome-stage");
+    const glCanvas = $("dome-gl");
+    const overlay = $("dome-overlay");
+    const octx = overlay.getContext("2d");
+
+    const MIN_FOV = 1.5;
+    const MAX_FOV = 150;
+
+    const state = { ra: 84, dec: 8, fov: 110 };
+    let target = null;
+    let footprints = [];
+    let markers = [];
+    let markerHits = [];
+    let gl = null;
+    let uniforms = null;
+    let ready = false;
+    let frameRequested = false;
+    let animation = null;
+    const handlers = { pick: null, marker: null };
+
+    // ---------- geometry ----------
+
+    const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+    function toVector(ra, dec) {
+        const a = ra * DEG;
+        const d = dec * DEG;
+        return [Math.cos(d) * Math.cos(a), Math.cos(d) * Math.sin(a), Math.sin(d)];
+    }
+
+    function toRaDec(v) {
+        let ra = Math.atan2(v[1], v[0]) / DEG;
+        if (ra < 0) ra += 360;
+        return { ra, dec: Math.asin(Math.max(-1, Math.min(1, v[2]))) / DEG };
+    }
+
+    // Forward = view centre; right = west, up = north (inside view: east is left).
+    function basis() {
+        const a = state.ra * DEG;
+        const d = state.dec * DEG;
+        return {
+            F: toVector(state.ra, state.dec),
+            R: [Math.sin(a), -Math.cos(a), 0],
+            U: [-Math.sin(d) * Math.cos(a), -Math.sin(d) * Math.sin(a), Math.cos(d)]
+        };
+    }
+
+    function viewSize() {
+        return { w: overlay.clientWidth, h: overlay.clientHeight };
+    }
+
+    // Screen pixels per unit of stereographic radius, so the shorter side spans the field of view.
+    function pixelScale() {
+        const { w, h } = viewSize();
+        return (Math.min(w, h) / 2) / (2 * Math.tan(state.fov * DEG / 4));
+    }
+
+    function project(v, B, s, w, h) {
+        const theta = Math.acos(Math.max(-1, Math.min(1, dot(v, B.F))));
+        if (theta > 170 * DEG) return null;
+        const r = 2 * Math.tan(theta / 2);
+        const a = dot(v, B.R);
+        const b = dot(v, B.U);
+        const n = Math.hypot(a, b);
+        if (n < 1e-12) return { x: w / 2, y: h / 2 };
+        return { x: w / 2 + r * a / n * s, y: h / 2 - r * b / n * s };
+    }
+
+    function unproject(px, py) {
+        const { w, h } = viewSize();
+        const s = pixelScale();
+        const B = basis();
+        const qx = (px - w / 2) / s;
+        const qy = -(py - h / 2) / s;
+        const r = Math.hypot(qx, qy);
+        if (r < 1e-12) return toRaDec(B.F);
+        const theta = 2 * Math.atan(r / 2);
+        const c = Math.cos(theta);
+        const sn = Math.sin(theta);
+        return toRaDec([0, 1, 2].map((i) => c * B.F[i] + sn * (qx / r * B.R[i] + qy / r * B.U[i])));
+    }
+
+    function formatRaDec(ra, dec) {
+        const h = ra / 15;
+        const hh = Math.floor(h);
+        const mm = Math.floor((h - hh) * 60);
+        const sign = dec < 0 ? "−" : "+";
+        const ad = Math.abs(dec);
+        const dd = Math.floor(ad);
+        const dm = Math.floor((ad - dd) * 60);
+        const pad = (n) => String(n).padStart(2, "0");
+        return `RA ${pad(hh)}h ${pad(mm)}m · DEC ${sign}${pad(dd)}° ${pad(dm)}′`;
+    }
+
+    // ---------- WebGL sky ----------
+
+    const VERTEX = "attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }";
+
+    const FRAGMENT = `
+        precision highp float;
+        uniform sampler2D sky;
+        uniform vec3 F;
+        uniform vec3 R;
+        uniform vec3 U;
+        uniform vec2 size;
+        uniform float scale;
+        void main() {
+            vec2 q = (gl_FragCoord.xy - 0.5 * size) / scale;
+            float r = length(q);
+            float theta = 2.0 * atan(r * 0.5);
+            vec3 d = F;
+            if (r > 1e-6) d = cos(theta) * F + sin(theta) * (q.x / r * R + q.y / r * U);
+            float ra = atan(d.y, d.x);
+            float dec = asin(clamp(d.z, -1.0, 1.0));
+            vec2 uv = vec2(fract(ra / 6.28318530718), 0.5 - dec / 3.14159265359);
+            vec3 colour = texture2D(sky, uv).rgb;
+            // Darken towards the rim of wide views, like the edge of a dome.
+            colour *= 1.0 - 0.6 * smoothstep(1.3, 2.5, theta);
+            gl_FragColor = vec4(colour, 1.0);
+        }`;
+
+    function initGL() {
+        gl = glCanvas.getContext("webgl", { antialias: false, preserveDrawingBuffer: false });
+        if (!gl) return false;
+
+        const compile = (type, source) => {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+            return shader;
+        };
+
+        const program = gl.createProgram();
+        gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX));
+        gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAGMENT));
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const location = gl.getAttribLocation(program, "p");
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 0, 0);
+
+        uniforms = {};
+        ["sky", "F", "R", "U", "size", "scale"].forEach((name) => {
+            uniforms[name] = gl.getUniformLocation(program, name);
+        });
+
+        return true;
+    }
+
+    function loadTexture() {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+
+            image.onload = () => {
+                let source = image;
+                const max = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+
+                // Older phones may not take a 4096-wide texture: shrink to fit.
+                if (image.width > max) {
+                    const small = document.createElement("canvas");
+                    small.width = max;
+                    small.height = max / 2;
+                    small.getContext("2d").drawImage(image, 0, 0, small.width, small.height);
+                    source = small;
+                }
+
+                const texture = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.uniform1i(uniforms.sky, 0);
+                resolve();
+            };
+
+            image.onerror = () => reject(new Error("Couldn't load the sky map."));
+            image.src = "/sky-dome.jpg";
+        });
+    }
+
+    // ---------- drawing ----------
+
+    function requestDraw() {
+        if (frameRequested) return;
+        frameRequested = true;
+        requestAnimationFrame(frame);
+    }
+
+    function frame(time) {
+        frameRequested = false;
+
+        if (animation) {
+            const done = stepAnimation(time);
+            if (!done) requestDraw();
+        }
+
+        draw();
+    }
+
+    function resizeCanvases() {
+        const { w, h } = viewSize();
+        const dpr = window.devicePixelRatio || 1;
+        const W = Math.max(1, Math.round(w * dpr));
+        const H = Math.max(1, Math.round(h * dpr));
+
+        for (const canvas of [glCanvas, overlay]) {
+            if (canvas.width !== W || canvas.height !== H) {
+                canvas.width = W;
+                canvas.height = H;
+            }
+        }
+        return { w, h, dpr };
+    }
+
+    function draw() {
+        if (!ready) return;
+
+        const { w, h, dpr } = resizeCanvases();
+        const B = basis();
+        const s = pixelScale();
+
+        gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+        gl.uniform3fv(uniforms.F, B.F);
+        gl.uniform3fv(uniforms.R, B.R);
+        gl.uniform3fv(uniforms.U, B.U);
+        gl.uniform2f(uniforms.size, glCanvas.width, glCanvas.height);
+        gl.uniform1f(uniforms.scale, s * dpr);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        octx.clearRect(0, 0, w, h);
+
+        drawGrid(B, s, w, h);
+        drawFootprints(B, s, w, h);
+        drawMarkers(B, s, w, h);
+        drawTarget(B, s, w, h);
+
+        $("dome-fov").textContent = `FIELD OF VIEW ${state.fov < 10 ? state.fov.toFixed(1) : Math.round(state.fov)}°`;
+    }
+
+    // Draw a path through sky points, breaking it where it leaves the view.
+    function strokeSkyPath(points, B, s, w, h, closed) {
+        octx.beginPath();
+        let previous = null;
+
+        const list = closed ? points.concat([points[0]]) : points;
+
+        for (const v of list) {
+            const p = project(v, B, s, w, h);
+            if (!p || (previous && Math.hypot(p.x - previous.x, p.y - previous.y) > Math.max(w, h))) {
+                previous = null;
+                continue;
+            }
+            if (previous) octx.lineTo(p.x, p.y);
+            else octx.moveTo(p.x, p.y);
+            previous = p;
+        }
+        octx.stroke();
+    }
+
+    function drawGrid(B, s, w, h) {
+        const step = Math.max(0.25, Math.min(2, state.fov / 40));
+        octx.lineWidth = 1;
+
+        // Declination circles every 30 degrees; the celestial equator a bit brighter.
+        for (let dec = -60; dec <= 60; dec += 30) {
+            const points = [];
+            for (let ra = 0; ra <= 360; ra += step) points.push(toVector(ra, dec));
+            octx.strokeStyle = dec === 0 ? "rgba(140, 190, 255, .35)" : "rgba(140, 190, 255, .14)";
+            strokeSkyPath(points, B, s, w, h, false);
+        }
+
+        // Right ascension lines every 2 hours (30 degrees).
+        octx.strokeStyle = "rgba(140, 190, 255, .14)";
+        for (let ra = 0; ra < 360; ra += 30) {
+            const points = [];
+            for (let dec = -88; dec <= 88; dec += step) points.push(toVector(ra, dec));
+            strokeSkyPath(points, B, s, w, h, false);
+        }
+
+        // Hour labels along the equator.
+        octx.font = "10px Inter, sans-serif";
+        octx.fillStyle = "rgba(170, 205, 245, .6)";
+        for (let ra = 0; ra < 360; ra += 30) {
+            const p = project(toVector(ra, 0), B, s, w, h);
+            if (p && p.x > 10 && p.x < w - 30 && p.y > 30 && p.y < h - 30) {
+                octx.fillText(`${ra / 15}h`, p.x + 4, p.y - 4);
+            }
+        }
+    }
+
+    function drawFootprints(B, s, w, h) {
+        if (!footprints.length) return;
+
+        octx.lineWidth = 1.5;
+        octx.strokeStyle = "rgba(90, 225, 255, .85)";
+        octx.fillStyle = "rgba(90, 225, 255, .07)";
+
+        for (const polygon of footprints) {
+            // Densify edges so they follow great circles at any zoom.
+            const corners = polygon.map(([ra, dec]) => toVector(ra, dec));
+            const points = [];
+            for (let i = 0; i < corners.length; i++) {
+                const a = corners[i];
+                const b = corners[(i + 1) % corners.length];
+                for (let k = 0; k < 12; k++) {
+                    const t = k / 12;
+                    const v = [0, 1, 2].map((j) => a[j] * (1 - t) + b[j] * t);
+                    const n = Math.hypot(...v);
+                    points.push(v.map((x) => x / n));
+                }
+            }
+            strokeSkyPath(points, B, s, w, h, true);
+            octx.fill();
+        }
+    }
+
+    function drawMarkers(B, s, w, h) {
+        markerHits = [];
+        octx.font = "11px Inter, sans-serif";
+
+        for (const marker of markers) {
+            const p = project(toVector(marker.ra, marker.dec), B, s, w, h);
+            if (!p || p.x < -20 || p.y < -20 || p.x > w + 20 || p.y > h + 20) continue;
+
+            octx.fillStyle = "rgba(220, 235, 255, .95)";
+            octx.beginPath();
+            octx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+            octx.fill();
+            octx.strokeStyle = "rgba(0, 0, 0, .7)";
+            octx.lineWidth = 1;
+            octx.stroke();
+
+            octx.fillStyle = "rgba(220, 235, 255, .9)";
+            octx.shadowColor = "#000";
+            octx.shadowBlur = 4;
+            octx.fillText(marker.name, p.x + 8, p.y + 4);
+            octx.shadowBlur = 0;
+
+            markerHits.push({ marker, x: p.x, y: p.y });
+        }
+    }
+
+    function drawTarget(B, s, w, h) {
+        if (!target) return;
+        const p = project(toVector(target.ra, target.dec), B, s, w, h);
+        if (!p) return;
+
+        octx.strokeStyle = "#ffd479";
+        octx.lineWidth = 1.5;
+        octx.beginPath();
+        octx.arc(p.x, p.y, 11, 0, Math.PI * 2);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            octx.moveTo(p.x + dx * 15, p.y + dy * 15);
+            octx.lineTo(p.x + dx * 24, p.y + dy * 24);
+        }
+        octx.stroke();
+
+        // Skip the label when a marker already names this spot.
+        if (target.label && !markers.some((m) => m.name === target.label)) {
+            octx.font = "600 12px Inter, sans-serif";
+            octx.fillStyle = "#ffd479";
+            octx.shadowColor = "#000";
+            octx.shadowBlur = 5;
+            octx.fillText(target.label, p.x + 28, p.y - 14);
+            octx.shadowBlur = 0;
+        }
+    }
+
+    // ---------- animation ----------
+
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    function flyTo(ra, dec, fov) {
+        const endFov = Math.min(MAX_FOV, Math.max(MIN_FOV, fov || state.fov));
+
+        if (!ready || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            state.ra = ra;
+            state.dec = dec;
+            state.fov = endFov;
+            requestDraw();
+            return;
+        }
+
+        const from = toVector(state.ra, state.dec);
+        const to = toVector(ra, dec);
+        const angle = Math.acos(Math.max(-1, Math.min(1, dot(from, to))));
+
+        animation = {
+            start: null,
+            duration: 900 + Math.min(1200, angle / DEG * 8),
+            from, to, angle,
+            fov0: state.fov,
+            fov1: endFov,
+            // Long trips pull back first so you see where you are going.
+            fovMid: angle > 40 * DEG ? Math.max(state.fov, endFov, 100) : null
+        };
+        requestDraw();
+    }
+
+    function stepAnimation(time) {
+        const a = animation;
+        if (a.start === null) a.start = time;
+        const t = Math.min(1, (time - a.start) / a.duration);
+        const e = ease(t);
+
+        let v = a.to;
+        if (a.angle > 1e-6) {
+            const sa = Math.sin(a.angle);
+            const k0 = Math.sin((1 - e) * a.angle) / sa;
+            const k1 = Math.sin(e * a.angle) / sa;
+            v = [0, 1, 2].map((i) => k0 * a.from[i] + k1 * a.to[i]);
+        }
+
+        const centre = toRaDec(v);
+        state.ra = centre.ra;
+        state.dec = Math.max(-89.5, Math.min(89.5, centre.dec));
+
+        const logLerp = (x, y, u) => Math.exp(Math.log(x) + (Math.log(y) - Math.log(x)) * u);
+        if (a.fovMid) {
+            state.fov = t < 0.5
+                ? logLerp(a.fov0, a.fovMid, ease(t * 2))
+                : logLerp(a.fovMid, a.fov1, ease(t * 2 - 1));
+        } else {
+            state.fov = logLerp(a.fov0, a.fov1, e);
+        }
+
+        if (t >= 1) {
+            animation = null;
+            return true;
+        }
+        return false;
+    }
+
+    // ---------- interaction ----------
+
+    const pointers = new Map();
+    let moved = false;
+
+    function local(event) {
+        const box = overlay.getBoundingClientRect();
+        return { x: event.clientX - box.left, y: event.clientY - box.top };
+    }
+
+    function zoomBy(factor) {
+        animation = null;
+        state.fov = Math.min(MAX_FOV, Math.max(MIN_FOV, state.fov * factor));
+        requestDraw();
+    }
+
+    function panBy(dx, dy) {
+        animation = null;
+        const s = pixelScale();
+        const cos = Math.max(0.05, Math.cos(state.dec * DEG));
+        state.ra = (state.ra + dx / s / DEG / cos + 360) % 360;
+        state.dec = Math.max(-89.5, Math.min(89.5, state.dec + dy / s / DEG));
+        requestDraw();
+    }
+
+    overlay.addEventListener("wheel", (event) => {
+        if (!ready) return;
+        event.preventDefault();
+        zoomBy(Math.exp(event.deltaY * 0.0012));
+    }, { passive: false });
+
+    overlay.addEventListener("pointerdown", (event) => {
+        if (!ready) return;
+        try {
+            overlay.setPointerCapture(event.pointerId);
+        } catch {
+            // Capture can fail if the pointer has already lifted.
+        }
+        pointers.set(event.pointerId, local(event));
+        moved = false;
+        overlay.classList.add("dragging");
+    });
+
+    overlay.addEventListener("pointermove", (event) => {
+        if (!ready) return;
+        const p = local(event);
+
+        if (pointers.has(event.pointerId)) {
+            const previous = pointers.get(event.pointerId);
+
+            if (pointers.size === 1) {
+                const dx = p.x - previous.x;
+                const dy = p.y - previous.y;
+                if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+                if (moved) panBy(dx, dy);
+            } else if (pointers.size === 2) {
+                const other = [...pointers.entries()].find(([id]) => id !== event.pointerId)[1];
+                const before = Math.hypot(previous.x - other.x, previous.y - other.y);
+                const after = Math.hypot(p.x - other.x, p.y - other.y);
+                if (after > 0) zoomBy(before / after);
+                moved = true;
+            }
+
+            pointers.set(event.pointerId, p);
+        }
+
+        const sky = unproject(p.x, p.y);
+        $("dome-readout").textContent = formatRaDec(sky.ra, sky.dec);
+    });
+
+    overlay.addEventListener("pointerup", (event) => {
+        const p = local(event);
+        const wasClick = pointers.size === 1 && !moved;
+        pointers.delete(event.pointerId);
+        if (pointers.size === 0) overlay.classList.remove("dragging");
+        if (wasClick) choose(p);
+    });
+
+    overlay.addEventListener("pointercancel", (event) => {
+        pointers.delete(event.pointerId);
+        overlay.classList.remove("dragging");
+    });
+
+    overlay.addEventListener("pointerleave", () => {
+        if (!pointers.size) $("dome-readout").textContent = "";
+    });
+
+    overlay.addEventListener("keydown", (event) => {
+        const stepPx = 40;
+        const actions = {
+            ArrowLeft: () => panBy(stepPx, 0),
+            ArrowRight: () => panBy(-stepPx, 0),
+            ArrowUp: () => panBy(0, stepPx),
+            ArrowDown: () => panBy(0, -stepPx),
+            "+": () => zoomBy(1 / 1.4),
+            "=": () => zoomBy(1 / 1.4),
+            "-": () => zoomBy(1.4),
+            Enter: () => handlers.pick && handlers.pick({ ra: state.ra, dec: state.dec })
+        };
+        if (!actions[event.key]) return;
+        event.preventDefault();
+        actions[event.key]();
+    });
+
+    function choose(p) {
+        const hit = markerHits.find((m) => Math.hypot(m.x - p.x, m.y - p.y) <= 14);
+        if (hit && handlers.marker) {
+            handlers.marker(hit.marker);
+            return;
+        }
+        if (handlers.pick) handlers.pick(unproject(p.x, p.y));
+    }
+
+    // ---------- public API ----------
+
+    window.skyDome = {
+        flyTo,
+        setTarget(ra, dec, label) {
+            target = ra === null ? null : { ra, dec, label };
+            requestDraw();
+        },
+        setFootprints(list) {
+            footprints = (list || []).filter((polygon) => Array.isArray(polygon) && polygon.length >= 3);
+            requestDraw();
+        },
+        setMarkers(list) {
+            markers = list || [];
+            requestDraw();
+        },
+        onPick(fn) { handlers.pick = fn; },
+        onMarker(fn) { handlers.marker = fn; }
+    };
+
+    // ---------- start ----------
+
+    let started = false;
+
+    async function start() {
+        try {
+            await loadTexture();
+            ready = true;
+            $("dome-loading").hidden = true;
+            requestDraw();
+        } catch (error) {
+            $("dome-loading").textContent = error.message;
+        }
+    }
+
+    function startWhenNear() {
+        if (started) return;
+        const box = wrap.getBoundingClientRect();
+        if (box.top < window.innerHeight + 400 && box.bottom > -400) {
+            started = true;
+            window.removeEventListener("scroll", startWhenNear);
+            start();
+        }
+    }
+
+    try {
+        if (initGL()) {
+            wrap.hidden = false;
+            new ResizeObserver(requestDraw).observe(stage);
+            window.addEventListener("scroll", startWhenNear, { passive: true });
+            startWhenNear();
+        }
+    } catch (error) {
+        console.warn("Sky dome unavailable:", error);
+        wrap.hidden = true;
+    }
+
+})();
+
+/* ===================== COSMIC EXPLORER ===================== */
+
+(function () {
+
+    // SPHEREx's six detectors, each covering one slice of the infrared.
+    const BANDS = [
+        { band: 1, min: 0.75, max: 1.11, color: "#6f8cff" },
+        { band: 2, min: 1.11, max: 1.64, color: "#4fc3f7" },
+        { band: 3, min: 1.64, max: 2.42, color: "#4dd6a6" },
+        { band: 4, min: 2.42, max: 3.82, color: "#e6d35a" },
+        { band: 5, min: 3.82, max: 4.42, color: "#f5a04b" },
+        { band: 6, min: 4.42, max: 5.01, color: "#ef6461" }
+    ];
+
+    const SPECTRUM_MIN = 0.75;
+    const SPECTRUM_MAX = 5.01;
+
+    // Coordinates in degrees (J2000), so presets skip the name lookup.
+    const PRESETS = [
+        { name: "Andromeda Galaxy", ra: 10.6847, dec: 41.2688 },
+        { name: "Orion Nebula", ra: 83.8221, dec: -5.3911 },
+        { name: "Pleiades", ra: 56.75, dec: 24.1167 },
+        { name: "Crab Nebula", ra: 83.6331, dec: 22.0145 },
+        { name: "Galactic Centre", ra: 266.4168, dec: -29.0078 },
+        { name: "North Ecliptic Pole (deep field)", ra: 270.0, dec: 66.5607 }
+    ];
+
+    const PAGE_SIZE = 15;
+
+    const $ = (id) => document.getElementById(id);
+
+    const statusBox = $("explorer-status");
+    const matchBox = $("explorer-match");
+    const results = $("explorer-results");
+    const empty = $("explorer-empty");
+    const raInput = $("ra");
+    const decInput = $("dec");
+    const radiusInput = $("radius");
+    const showMore = $("show-more");
+
+    let requestId = 0;
+    let timer = null;
+    let epochs = [];
+    let shown = 0;
+    let lastVisits = null;
+
+    function el(tag, props = {}, children = []) {
+        const node = document.createElement(tag);
+
+        for (const [key, value] of Object.entries(props)) {
+            if (value === undefined || value === null) continue;
+            if (key === "className") node.className = value;
+            else if (key === "style") node.style.cssText = value;
+            else node.setAttribute(key, value);
+        }
+
+        node.append(...[].concat(children));
+        return node;
+    }
+
+    function percent(wavelength) {
+        return (wavelength - SPECTRUM_MIN) / (SPECTRUM_MAX - SPECTRUM_MIN) * 100;
+    }
+
+    function formatDate(isoDate) {
+        const date = new Date(isoDate.length === 10 ? isoDate + "T00:00:00Z" : isoDate + "Z");
+        return date.toLocaleDateString("en-GB", {
+            day: "numeric", month: "short", year: "numeric", timeZone: "UTC"
+        });
+    }
+
+    function formatTime(isoDate) {
+        return isoDate.slice(11, 16) + " UTC";
+    }
+
+    // ---------- status line ----------
+
+    function showStatus(text, { loading = false, error = false } = {}) {
+        statusBox.replaceChildren();
+        statusBox.classList.toggle("error", error);
+        if (loading) statusBox.append(el("span", { className: "spinner" }));
+        statusBox.append(text);
+    }
+
+    function startTimer(label) {
+        stopTimer();
+        const start = Date.now();
+        const tick = () => showStatus(
+            `${label} ${Math.floor((Date.now() - start) / 1000)}s`,
+            { loading: true }
+        );
+        tick();
+        timer = setInterval(tick, 1000);
+    }
+
+    function stopTimer() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    function setBusy(busy) {
+        document
+            .querySelectorAll("#explorer form button, #presets button, #explorer-match button")
+            .forEach((button) => { button.disabled = busy; });
+    }
+
+    async function getJSON(url) {
+        const response = await fetch(url);
+        let data;
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(`The server returned an error (${response.status}).`);
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || `Request failed (${response.status}).`);
+        }
+
+        return data;
+    }
+
+    // "No exact match for X — showing Y. Other matches: [A] [B]"
+    function showMatch(found) {
+        if (!found || found.exact) {
+            matchBox.hidden = true;
+            matchBox.replaceChildren();
+            return;
+        }
+
+        const kind = found.matched_type ? `, a ${found.matched_type}` : "";
+        const parts = [
+            el("div", {}, [
+                "No object is called exactly “", found.name, "”, so this shows the closest match: ",
+                el("strong", {}, [found.matched_name]), kind, "."
+            ])
+        ];
+
+        if (found.alternatives && found.alternatives.length) {
+            const chips = found.alternatives.map((alt) => {
+                const label = alt.type ? `${alt.name} (${alt.type})` : alt.name;
+                const button = el("button", { type: "button", className: "chip" }, [label]);
+                button.addEventListener("click", () => {
+                    $("object-name").value = alt.name;
+                    explore({ ra: alt.ra, dec: alt.dec, label: alt.name });
+                });
+                return button;
+            });
+
+            parts.push(el("div", { className: "presets" }, [
+                el("span", { className: "presets-label" }, ["DID YOU MEAN"]),
+                ...chips
+            ]));
+        }
+
+        matchBox.replaceChildren(...parts);
+        matchBox.hidden = false;
+    }
+
+    // ---------- search flow ----------
+
+    async function explore({ name = null, ra = null, dec = null, label = null, fromDome = false }) {
+        const id = ++requestId;
+        let found = null;
+        const dome = window.skyDome;
+
+        setBusy(true);
+
+        try {
+            if (name) {
+                startTimer(`Looking up “${name}”…`);
+                found = await getJSON("/api/resolve?name=" + encodeURIComponent(name));
+                if (id !== requestId) return;
+                ra = found.ra;
+                dec = found.dec;
+                label = found.exact ? name : found.matched_name;
+                showMatch(found);
+            } else {
+                // Clicking a suggestion keeps the suggestions visible.
+                if (!matchBox.contains(document.activeElement)) showMatch(null);
+            }
+
+            raInput.value = Number(ra.toFixed(5));
+            decInput.value = Number(dec.toFixed(5));
+
+            // Swing the sky dome to the target while the archive is searched.
+            if (dome) {
+                dome.setTarget(ra, dec, label || `${ra.toFixed(2)}°, ${dec >= 0 ? "+" : ""}${dec.toFixed(2)}°`);
+                dome.setFootprints([]);
+                dome.flyTo(ra, dec, 24);
+            }
+
+            const radius = Number(radiusInput.value) || 10;
+            const started = Date.now();
+
+            startTimer("Searching NASA's SPHEREx archive — this can take up to a minute…");
+
+            const params = new URLSearchParams({ ra, dec, radius, limit: 100 });
+            const data = await getJSON("/api/observations/matched?" + params);
+
+            if (id !== requestId) return;
+
+            stopTimer();
+            render(data, { ra, dec, radius, label, scroll: !fromDome });
+
+            // Outline the most recent SPHEREx images on the dome.
+            if (dome) {
+                dome.setFootprints(
+                    data.matching_results.epochs.slice(-12)
+                        .map((epoch) => (epoch.products.find((p) => p.footprint) || {}).footprint)
+                );
+            }
+
+            const seconds = ((Date.now() - started) / 1000).toFixed(1);
+            showStatus(
+                `Archive answered in ${seconds}s.` +
+                (fromDome && data.archive_total ? " Cyan squares on the sky are SPHEREx's latest images here; full results are below." : "")
+            );
+
+        } catch (error) {
+            if (id !== requestId) return;
+            stopTimer();
+            showMatch(null);
+            showStatus(error.message, { error: true });
+
+        } finally {
+            if (id === requestId) setBusy(false);
+        }
+    }
+
+    // ---------- rendering ----------
+
+    function render(data, query) {
+        const summary = data.archive_summary;
+        const place = query.label || "these coordinates";
+
+        if (!summary || summary.total_images === 0) {
+            results.hidden = true;
+            empty.hidden = false;
+            empty.textContent =
+                `SPHEREx hasn't released any images of ${place} yet. ` +
+                "Try a larger radius or another object.";
+            return;
+        }
+
+        empty.hidden = true;
+        results.hidden = false;
+
+        $("results-title").textContent = query.label || "Custom coordinates";
+        $("results-coords").textContent =
+            `RA ${query.ra.toFixed(4)}° · DEC ${query.dec.toFixed(4)}° · R ${query.radius}″`;
+
+        $("stat-images").textContent = summary.total_images.toLocaleString("en-GB");
+        $("stat-days").textContent = summary.visit_dates.length.toLocaleString("en-GB");
+        $("stat-first").textContent = formatDate(summary.first_date);
+        $("stat-last").textContent = formatDate(summary.last_date);
+
+        renderSpectrum(summary.bands);
+        renderTimeline(summary.visit_dates);
+        renderObservations(data);
+
+        // Searches started on the dome stay on the dome so you can see the outlines.
+        if (query.scroll !== false) results.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderSpectrum(bands) {
+        const found = Object.fromEntries(bands.map((item) => [item.band, item]));
+
+        $("spectrum").replaceChildren(...BANDS.map((band) => {
+            const seen = found[band.band];
+            const left = percent(band.min);
+            const width = percent(band.max) - left;
+
+            return el("div", {
+                className: "spectrum-segment",
+                title: `Band ${band.band}: ${band.min}–${band.max} µm — ` +
+                       (seen ? `${seen.images} images` : "not observed here"),
+                style: `left:${left}%;width:${width}%;` +
+                       `background:${seen ? band.color : "transparent"};` +
+                       `box-shadow:${seen ? `0 0 14px ${band.color}55` : "none"}`
+            });
+        }));
+
+        $("band-grid").replaceChildren(...BANDS.map((band) => {
+            const seen = found[band.band];
+
+            return el("div", {
+                className: "band" + (seen ? "" : " missing"),
+                style: `--band:${band.color}`
+            }, [
+                el("div", { className: "band-name" }, [`BAND ${band.band}`]),
+                el("div", { className: "band-range" }, [`${band.min.toFixed(2)}–${band.max.toFixed(2)} µm`]),
+                el("div", { className: "band-count" }, seen
+                    ? [String(seen.images), el("span", {}, ["images"])]
+                    : ["—", el("span", {}, ["not seen"])])
+            ]);
+        }));
+    }
+
+    function renderTimeline(visits) {
+        lastVisits = visits;
+
+        const times = visits.map((visit) => Date.parse(visit.date + "T00:00:00Z"));
+        const first = Math.min(...times);
+        const last = Math.max(...times);
+        const span = last - first;
+        const most = Math.max(...visits.map((visit) => visit.images));
+
+        const position = (time) => span === 0 ? 50 : 2 + (time - first) / span * 96;
+
+        $("timeline").replaceChildren(...visits.map((visit, index) => el("div", {
+            className: "timeline-bar",
+            title: `${formatDate(visit.date)}: ${visit.images} image${visit.images === 1 ? "" : "s"}`,
+            style: `left:${position(times[index])}%;height:${Math.max(4, visit.images / most * 100)}%`
+        })));
+
+        // Labels: first and last day, plus regularly spaced month marks
+        // that never collide, whatever the screen width.
+        const labels = [];
+
+        if (span === 0) {
+            labels.push(el("span", { style: "left:50%" }, [formatDate(visits[0].date)]));
+        } else {
+            labels.push(el("span", { className: "first", style: "left:0" }, [formatDate(visits[0].date)]));
+
+            const width = $("timeline").clientWidth || 600;
+            const END_LABEL = 70;
+            const HALF_MONTH = 26;
+            const PADDING = 14;
+
+            // Label every 1/2/3/6/12 months: the smallest step that keeps
+            // month labels at least ~120px apart.
+            const pixelsPerMonth = width * 0.96 / (span / (30.44 * 86400000));
+            const step = [1, 2, 3, 6, 12].find((s) => s * pixelsPerMonth >= 120) || 12;
+
+            const month = new Date(first);
+            month.setUTCDate(1);
+            month.setUTCMonth(month.getUTCMonth() + 1);
+
+            while (month.getTime() < last) {
+                const x = position(month.getTime());
+                const centre = x / 100 * width;
+
+                if (month.getUTCMonth() % step === 0 &&
+                    centre - HALF_MONTH >= END_LABEL + PADDING &&
+                    centre + HALF_MONTH <= width - END_LABEL - PADDING) {
+                    labels.push(el("span", { style: `left:${x}%` }, [
+                        month.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" })
+                    ]));
+                }
+
+                month.setUTCMonth(month.getUTCMonth() + 1);
+            }
+
+            labels.push(el("span", { className: "last", style: "left:100%" }, [formatDate(visits[visits.length - 1].date)]));
+        }
+
+        $("timeline-labels").replaceChildren(...labels);
+    }
+
+    function productLink(product) {
+        const band = BANDS.find((item) => item.band === product.band);
+        const color = band ? band.color : "#5aaeff";
+        const range = (product.wavelength_min_m && product.wavelength_max_m)
+            ? `${(product.wavelength_min_m * 1e6).toFixed(2)}–${(product.wavelength_max_m * 1e6).toFixed(2)} µm`
+            : "unknown band";
+        const size = product.size_mb ? ` · ${Math.round(product.size_mb)} MB` : "";
+        const text = `${band ? "B" + band.band + " · " : ""}${range}${size} ↓`;
+        const url = product.access_url || "";
+
+        if (!url.startsWith("https://")) {
+            return el("span", { className: "product-link", style: `--band:${color}` }, [text]);
+        }
+
+        return el("a", {
+            className: "product-link",
+            href: url,
+            target: "_blank",
+            rel: "noopener",
+            title: "Download the original FITS image",
+            style: `--band:${color}`
+        }, [text]);
+    }
+
+    function renderObservations(data) {
+        epochs = data.matching_results.epochs.slice().reverse();
+        shown = 0;
+
+        $("obs-list").replaceChildren();
+        $("obs-note").textContent =
+            `Showing the ${data.returned_products} most recent of ` +
+            `${data.archive_total.toLocaleString("en-GB")} images · full FITS files`;
+
+        appendObservations();
+    }
+
+    function appendObservations() {
+        const next = epochs.slice(shown, shown + PAGE_SIZE);
+
+        $("obs-list").append(...next.map((epoch) => el("div", { className: "obs-row" }, [
+            el("div", { className: "obs-date" }, [
+                formatDate(epoch.date),
+                el("small", {}, [formatTime(epoch.date)])
+            ]),
+            el("div", { className: "obs-id" }, [epoch.observation_id]),
+            el("div", { className: "obs-products" }, epoch.products.map(productLink))
+        ])));
+
+        shown += next.length;
+        showMore.hidden = shown >= epochs.length;
+    }
+
+    // ---------- wiring ----------
+
+    $("spectrum-axis").replaceChildren(...[1, 2, 3, 4, 5].map((micron) =>
+        el("span", { style: `left:${percent(micron)}%` }, [micron === 5 ? "5 µm" : `${micron}`])
+    ));
+
+    PRESETS.forEach((preset) => {
+        const button = el("button", { type: "button", className: "chip" }, [preset.name]);
+        button.addEventListener("click", () => {
+            showMatch(null);
+            explore({ ra: preset.ra, dec: preset.dec, label: preset.name });
+        });
+        $("presets").append(button);
+    });
+
+    // Sky dome: famous objects as clickable markers; clicking empty sky searches there.
+    if (window.skyDome) {
+        window.skyDome.setMarkers(PRESETS.concat([
+            { name: "Large Magellanic Cloud", ra: 80.8938, dec: -69.7561 },
+            { name: "Whirlpool Galaxy", ra: 202.4696, dec: 47.1952 }
+        ]));
+
+        window.skyDome.onMarker((marker) => {
+            showMatch(null);
+            explore({ ra: marker.ra, dec: marker.dec, label: marker.name, fromDome: true });
+        });
+
+        window.skyDome.onPick(({ ra, dec }) => {
+            showMatch(null);
+            explore({ ra, dec, label: null, fromDome: true });
+        });
+    }
+
+    $("name-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = $("object-name").value.trim();
+
+        if (!name) {
+            showStatus("Type an object name first, e.g. M31.", { error: true });
+            return;
+        }
+
+        explore({ name });
+    });
+
+    $("coord-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        showMatch(null);
+        explore({ ra: Number(raInput.value), dec: Number(decInput.value) });
+    });
+
+    showMore.addEventListener("click", appendObservations);
+
+    // Re-space the timeline labels when the screen size changes.
+    let resizeTimer = null;
+
+    window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (lastVisits && !results.hidden) renderTimeline(lastVisits);
+        }, 150);
+    });
+
+})();
+
+/* ===================== SCIENCE RESULTS ===================== */
+
+(function () {
+
+    const $ = (id) => document.getElementById(id);
+
+    // One-hue sequential scale: low values dark, high values bright.
+    const LOW = [14, 34, 64];
+    const HIGH = [143, 208, 255];
+
+    const METRICS = {
+        central_fraction: {
+            low: "blurrier", high: "sharper",
+            format: (v) => (v * 100).toFixed(1) + "%"
+        },
+        wavelength_um: {
+            low: "shorter", high: "longer",
+            format: (v) => v.toFixed(3) + " µm"
+        },
+        peak_intensity: {
+            low: "dimmer", high: "brighter",
+            format: (v) => (v * 100).toFixed(2) + "%"
+        }
+    };
+
+    let zones = [];
+    let cells = [];
+    let metric = "central_fraction";
+    let activeCell = null;
+
+    function el(tag, props = {}, children = []) {
+        const node = document.createElement(tag);
+        for (const [key, value] of Object.entries(props)) {
+            if (value === undefined || value === null) continue;
+            if (key === "className") node.className = value;
+            else if (key === "style") node.style.cssText = value;
+            else node.setAttribute(key, value);
+        }
+        node.append(...[].concat(children));
+        return node;
+    }
+
+    function colour(t) {
+        return `rgb(${LOW.map((low, i) => Math.round(low + (HIGH[i] - low) * t)).join(",")})`;
+    }
+
+    // Whole percent, but one decimal near 100% so 99.6% doesn't read as 100%.
+    const percent = (v) => (v >= 0.99 && v < 1 ? (v * 100).toFixed(1) : Math.round(v * 100)) + "%";
+    const signed = (v) => v.toFixed(2).replace("-", "−");
+
+    // ---------- PSF map ----------
+
+    function paint() {
+        const values = zones.map((zone) => zone[metric]);
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const info = METRICS[metric];
+
+        cells.forEach((cell, i) => {
+            cell.style.background = colour((values[i] - min) / (max - min || 1));
+        });
+
+        $("legend-min").textContent = `${info.format(min)} ${info.low}`;
+        $("legend-max").textContent = `${info.high} ${info.format(max)}`;
+
+        document.querySelectorAll(".metric-toggle .chip").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.metric === metric));
+        });
+    }
+
+    function defaultReadout() {
+        $("psf-readout").replaceChildren(
+            el("div", { className: "readout-title" }, ["WHAT THE COLOURS MEAN"]),
+            el("dl", {}, [
+                el("dt", {}, ["Sharpness"]),
+                el("dd", {}, ["Share of a star's light that lands within the central ~2 pixels. Higher is crisper."]),
+                el("dt", {}, ["Wavelength"]),
+                el("dd", {}, ["The infrared wavelength this part of the detector sees, in micrometres."]),
+                el("dt", {}, ["Peak brightness"]),
+                el("dd", {}, ["Share of the light in the single brightest point of the blur."])
+            ])
+        );
+    }
+
+    function showZone(zone, cell) {
+        if (activeCell) activeCell.classList.remove("active");
+        activeCell = cell;
+        cell.classList.add("active");
+
+        $("psf-readout").replaceChildren(
+            el("div", { className: "readout-title" }, [`ZONE ${zone.zone + 1} OF ${zones.length}`]),
+            el("dl", {}, [
+                el("dt", {}, ["Position on detector"]),
+                el("dd", {}, [`x ${Math.round(zone.x)}, y ${Math.round(zone.y)} pixels`]),
+                el("dt", {}, ["Wavelength seen"]),
+                el("dd", {}, [`${zone.wavelength_um.toFixed(3)} µm (band ${zone.bandwidth_um.toFixed(3)} µm wide)`]),
+                el("dt", {}, ["Sharpness"]),
+                el("dd", {}, [`${(zone.central_fraction * 100).toFixed(1)}% of light in the centre`]),
+                el("dt", {}, ["Peak brightness"]),
+                el("dd", {}, [`${(zone.peak_intensity * 100).toFixed(2)}% of light in the brightest point`])
+            ])
+        );
+    }
+
+    function psfFinding(psf) {
+        const sharpness = psf.zones.map((zone) => zone.central_fraction);
+        const waves = psf.zones.map((zone) => zone.wavelength_um);
+        const rel = psf.relationships["wavelength vs central_fraction"] || [];
+        const raw = rel.find((item) => item.model === "no correction");
+        const adjusted = rel.filter((item) => item !== raw);
+
+        const parts = [
+            el("strong", {}, ["Finding: "]),
+            "zones that see longer wavelengths are blurrier. They keep less of a star's light in the centre ",
+            `(from ${percent(Math.max(...sharpness))} to ${percent(Math.min(...sharpness))}, `,
+            `across wavelengths from ${Math.min(...waves).toFixed(2)} to ${Math.max(...waves).toFixed(2)} µm). `
+        ];
+
+        if (raw && adjusted.length) {
+            const values = adjusted.map((item) => item.correlation);
+            const allSignificant = adjusted.every((item) => item.bonferroni_p < 0.05);
+
+            parts.push(
+                `The link is strong (correlation ${signed(raw.correlation)}, where −1 is a perfect opposite trend) `,
+                allSignificant
+                    ? `and survives every way we tried of correcting for where a zone sits on the detector `
+                    : `but weakens when we correct for where a zone sits on the detector `,
+                `(${signed(Math.min(...values))} to ${signed(Math.max(...values))}${allSignificant ? ", all statistically significant" : ""}). `
+            );
+        }
+
+        parts.push("That's what physics predicts: longer light waves spread out more.");
+        $("psf-finding").replaceChildren(...parts);
+    }
+
+    function initPsf(psf) {
+        zones = psf.zones.slice().sort((a, b) => a.zone - b.zone);
+
+        cells = zones.map((zone) => {
+            const cell = el("button", {
+                type: "button",
+                className: "psf-cell",
+                "aria-label": `Zone ${zone.zone + 1}: wavelength ${zone.wavelength_um.toFixed(3)} µm, ` +
+                              `${(zone.central_fraction * 100).toFixed(1)}% of light in the centre`
+            });
+
+            ["mouseenter", "focus", "click"].forEach((type) =>
+                cell.addEventListener(type, () => showZone(zone, cell)));
+
+            return cell;
+        });
+
+        $("psf-map").replaceChildren(...cells);
+        $("psf-map").style.gridTemplateColumns = `repeat(${psf.grid || 11}, 1fr)`;
+
+        document.querySelectorAll(".metric-toggle .chip").forEach((button) => {
+            button.addEventListener("click", () => {
+                metric = button.dataset.metric;
+                paint();
+            });
+        });
+
+        defaultReadout();
+        paint();
+        psfFinding(psf);
+        $("psf-panel").hidden = false;
+    }
+
+    // ---------- Source detection ----------
+
+    function initSources(src) {
+        const top = src.match_rate_top && src.match_rate_top["10000"];
+
+        $("src-count").textContent = src.detections.toLocaleString("en-GB");
+        $("src-match").textContent = percent(src.match_rate_all);
+        $("src-chance").textContent = percent(src.chance_match_rate);
+        $("src-top").textContent = top ? percent(top) : "—";
+
+        $("src-finding").replaceChildren(
+            el("strong", {}, ["Finding: "]),
+            `${percent(src.match_rate_all)} of our detections sit on a star 2MASS already knew about, `,
+            `against ${percent(src.chance_match_rate)} for random spots in this crowded field. `,
+            top ? `Among the strongest 10,000 it's ${percent(top)}. ` : "",
+            "The unmatched ones include stars fainter than the 2MASS stars we compared against ",
+            `(${src.catalogue.replace("2MASS Point Source Catalog, ", "")}), blends of stars too close to separate, and some noise.`
+        );
+
+        const rows = src.completeness_by_j_mag.filter((row) => row.recovered !== null);
+        const last = rows.length - 1;
+
+        $("completeness").replaceChildren(
+            el("div", { className: "panel-title" }, ["SHARE OF CATALOGUED STARS WE FOUND, BY BRIGHTNESS"]),
+            ...rows.map((row, i) => {
+                const label = row.j_min === null
+                    ? `Brightest (J < ${row.j_max})`
+                    : i === last
+                        ? `Faintest (J ${row.j_min}–${row.j_max})`
+                        : `J ${row.j_min}–${row.j_max}`;
+
+                return el("div", { className: "completeness-row", title: `${row.stars.toLocaleString("en-GB")} stars` }, [
+                    el("span", {}, [label]),
+                    el("div", { className: "completeness-track" }, [
+                        el("div", { className: "completeness-bar", style: `width:${row.recovered * 100}%` })
+                    ]),
+                    el("span", { className: "value" }, [percent(row.recovered)])
+                ]);
+            }),
+            el("p", { className: "psf-axis-note" }, [
+                "J is the 2MASS brightness scale: smaller numbers are brighter stars. ",
+                "The very brightest stars are partly missed because their centres saturate the detector and are masked out."
+            ])
+        );
+
+        $("sources-panel").hidden = false;
+    }
+
+    fetch("/api/science")
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.psf) initPsf(data.psf);
+            if (data.sources) initSources(data.sources);
+            if (!data.psf && !data.sources) $("science-missing").hidden = false;
+        })
+        .catch(() => { $("science-missing").hidden = false; });
+
+})();
+
+/* ===================== IMAGE VIEWER ===================== */
+
+(function () {
+
+    const $ = (id) => document.getElementById(id);
+
+    // Ten evenly spaced samples of each matplotlib colour map.
+    const COLOUR_MAPS = {
+        inferno: ["#000004", "#1b0c41", "#4a0c6b", "#781c6d", "#a52c60", "#cf4446", "#ed6925", "#fb9b06", "#f7d13d", "#fcffa4"],
+        viridis: ["#440154", "#482878", "#3e4989", "#31688e", "#26828e", "#1f9e89", "#35b779", "#6ece58", "#b5de2b", "#fde725"],
+        magma:   ["#000004", "#180f3d", "#440f76", "#721f81", "#9e2f7f", "#cd4071", "#f1605d", "#fd9668", "#feca8d", "#fcfdbf"],
+        grey:    ["#000000", "#ffffff"]
+    };
+
+    // How brightness maps to 0..1 before colouring.
+    // "Bright stars" is a plain linear scale; the other two lift faint
+    // pixels progressively more, so faint stars and sky texture show up.
+    const STRETCHES = {
+        linear: { high: "99.5", curve: (t) => t },
+        asinh:  { high: "99.5", curve: (t) => Math.asinh(t * 50) / Math.asinh(50) },
+        log:    { high: "99.5", curve: (t) => Math.log(1 + 1000 * t) / Math.log(1001) }
+    };
+
+    const MIN_ZOOM_FACTOR = 0.8;   // relative to "fit"
+    const MAX_SCALE = 40;          // screen pixels per image pixel
+    const SOURCE_RADIUS = 3;       // pixels, for "detected star" readout
+
+    const panel = $("viewer-panel");
+    const stage = $("viewer-stage");
+    const canvas = $("viewer-canvas");
+    const ctx = canvas.getContext("2d");
+
+    let meta = null;
+    let values = null;            // Float32Array, row 0 = bottom of image
+    let width = 0;
+    let height = 0;
+    let offscreen = null;         // coloured image, display orientation (top row first)
+    let cmap = "inferno";
+    let stretch = "asinh";
+    let showSources = false;
+    let hover = null;             // {x, y} image pixel under the pointer
+
+    // View: screen = (display - origin) * scale, in CSS pixels.
+    const view = { scale: 1, ox: 0, oy: 0, fit: 1 };
+    const pointers = new Map();
+    let dragMoved = false;
+
+    // ---------- loading ----------
+
+    async function load() {
+        const [metaResponse, imageResponse] = await Promise.all([
+            fetch("/api/viewer/meta"),
+            fetch("/api/viewer/image")
+        ]);
+
+        if (!metaResponse.ok || !imageResponse.ok) throw new Error("Viewer data not available.");
+
+        meta = await metaResponse.json();
+        const bytes = new Uint8Array(await imageResponse.arrayBuffer());
+
+        width = meta.width;
+        height = meta.height;
+
+        const n = width * height;
+        const { scale, step, no_data: noData } = meta.encoding;
+
+        if (bytes.length !== 2 * n) throw new Error("Viewer image has the wrong size.");
+
+        // Undo the byte shuffle (low bytes first, then high bytes) and the
+        // asinh quantisation, using a lookup table over all int16 values.
+        const table = new Float32Array(65536);
+        for (let q = -32768; q < 32768; q++) {
+            table[q & 0xffff] = q === noData ? NaN : scale * Math.sinh(q * step);
+        }
+
+        values = new Float32Array(n);
+        for (let i = 0; i < n; i++) {
+            values[i] = table[bytes[i] | (bytes[n + i] << 8)];
+        }
+
+        $("viewer-info").textContent =
+            `Observation ${meta.observation} · detector ${meta.detector} · ${meta.date.slice(0, 10)}`;
+    }
+
+    // ---------- colouring ----------
+
+    function buildLut(stops) {
+        const rgb = stops.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)));
+        const lut = new Uint8ClampedArray(256 * 3);
+
+        for (let i = 0; i < 256; i++) {
+            const position = i / 255 * (rgb.length - 1);
+            const k = Math.min(Math.floor(position), rgb.length - 2);
+            const t = position - k;
+            for (let c = 0; c < 3; c++) {
+                lut[i * 3 + c] = rgb[k][c] + (rgb[k + 1][c] - rgb[k][c]) * t;
+            }
+        }
+        return lut;
+    }
+
+    function colourImage() {
+        const lut = buildLut(COLOUR_MAPS[cmap]);
+        const { high, curve } = STRETCHES[stretch];
+        const lo = meta.percentiles["1"];
+        const hi = meta.percentiles[high];
+
+        // Brightness -> colour index, via a 4096-step table of the curve.
+        const curveTable = new Uint8Array(4096);
+        for (let i = 0; i < 4096; i++) curveTable[i] = Math.round(curve(i / 4095) * 255);
+
+        if (!offscreen) {
+            offscreen = document.createElement("canvas");
+            offscreen.width = width;
+            offscreen.height = height;
+        }
+
+        const octx = offscreen.getContext("2d");
+        const pixels = octx.createImageData(width, height);
+        const out = pixels.data;
+        const range = hi - lo;
+
+        for (let row = 0; row < height; row++) {
+            const source = row * width;
+            const target = (height - 1 - row) * width * 4;   // flip: row 0 at the bottom
+
+            for (let x = 0; x < width; x++) {
+                const v = values[source + x];
+                const o = target + x * 4;
+
+                if (v !== v) {          // NaN: no data
+                    out[o] = 30; out[o + 1] = 30; out[o + 2] = 40; out[o + 3] = 255;
+                    continue;
+                }
+
+                let t = (v - lo) / range;
+                t = t < 0 ? 0 : t > 1 ? 1 : t;
+                const c = curveTable[(t * 4095) | 0] * 3;
+
+                out[o] = lut[c]; out[o + 1] = lut[c + 1]; out[o + 2] = lut[c + 2]; out[o + 3] = 255;
+            }
+        }
+
+        octx.putImageData(pixels, 0, 0);
+    }
+
+    // ---------- drawing ----------
+
+    function resize() {
+        const box = stage.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.round(box.width * dpr);
+        canvas.height = Math.round(box.height * dpr);
+        view.fit = Math.min(box.width / width, box.height / height);
+    }
+
+    function resetView() {
+        const box = stage.getBoundingClientRect();
+        view.scale = view.fit;
+        view.ox = (width - box.width / view.scale) / 2;
+        view.oy = (height - box.height / view.scale) / 2;
+        draw();
+    }
+
+    function draw() {
+        if (!offscreen) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const s = view.scale * dpr;
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.imageSmoothingEnabled = view.scale < 1;
+        ctx.setTransform(s, 0, 0, s, -view.ox * s, -view.oy * s);
+        ctx.drawImage(offscreen, 0, 0);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        if (showSources && meta.sources) {
+            const radius = Math.max(3, view.scale * 2);
+            ctx.strokeStyle = "rgba(90, 220, 255, .9)";
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+
+            const { x: xs, y: ys } = meta.sources;
+            for (let i = 0; i < xs.length; i++) {
+                const sx = (xs[i] + 0.5 - view.ox) * view.scale;
+                const sy = (height - 1 - ys[i] + 0.5 - view.oy) * view.scale;
+                if (sx < -radius || sy < -radius || sx > canvas.width / dpr + radius || sy > canvas.height / dpr + radius) continue;
+                ctx.moveTo(sx + radius, sy);
+                ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+            }
+            ctx.stroke();
+        }
+
+        // Outline the hovered pixel once pixels are big enough to see.
+        if (hover && view.scale >= 6) {
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(
+                (hover.x - view.ox) * view.scale + 0.5,
+                (height - 1 - hover.y - view.oy) * view.scale + 0.5,
+                view.scale - 1, view.scale - 1
+            );
+        }
+
+        const zoom = view.scale / view.fit;
+        $("viewer-zoom").hidden = false;
+        $("viewer-zoom").textContent = view.scale >= 1
+            ? `${zoom.toFixed(zoom < 10 ? 1 : 0)}× · 1 pixel = ${view.scale.toFixed(view.scale < 10 ? 1 : 0)} screen px`
+            : `${zoom.toFixed(1)}×`;
+    }
+
+    // ---------- navigation ----------
+
+    function clampView() {
+        const box = stage.getBoundingClientRect();
+        const visibleW = box.width / view.scale;
+        const visibleH = box.height / view.scale;
+
+        // Keep at least a quarter of the view on the image.
+        view.ox = Math.min(Math.max(view.ox, -visibleW * 0.75), width - visibleW * 0.25);
+        view.oy = Math.min(Math.max(view.oy, -visibleH * 0.75), height - visibleH * 0.25);
+    }
+
+    function zoomAt(sx, sy, factor) {
+        const next = Math.min(MAX_SCALE, Math.max(view.fit * MIN_ZOOM_FACTOR, view.scale * factor));
+        const dx = sx / view.scale + view.ox;
+        const dy = sy / view.scale + view.oy;
+        view.scale = next;
+        view.ox = dx - sx / next;
+        view.oy = dy - sy / next;
+        clampView();
+        draw();
+    }
+
+    function zoomCentre(factor) {
+        const box = stage.getBoundingClientRect();
+        zoomAt(box.width / 2, box.height / 2, factor);
+    }
+
+    function localPoint(event) {
+        const box = canvas.getBoundingClientRect();
+        return { x: event.clientX - box.left, y: event.clientY - box.top };
+    }
+
+    canvas.addEventListener("wheel", (event) => {
+        if (!offscreen) return;
+        event.preventDefault();
+        const p = localPoint(event);
+        zoomAt(p.x, p.y, Math.exp(-event.deltaY * 0.0015));
+    }, { passive: false });
+
+    canvas.addEventListener("pointerdown", (event) => {
+        if (!offscreen) return;
+        try {
+            canvas.setPointerCapture(event.pointerId);
+        } catch {
+            // Capture can fail (e.g. the pointer already lifted); dragging still works.
+        }
+        pointers.set(event.pointerId, localPoint(event));
+        dragMoved = false;
+        canvas.classList.add("dragging");
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+        if (!offscreen) return;
+        const p = localPoint(event);
+
+        if (pointers.has(event.pointerId)) {
+            const previous = pointers.get(event.pointerId);
+
+            if (pointers.size === 1) {
+                const dx = p.x - previous.x;
+                const dy = p.y - previous.y;
+                if (Math.abs(dx) + Math.abs(dy) > 2) dragMoved = true;
+                view.ox -= dx / view.scale;
+                view.oy -= dy / view.scale;
+                clampView();
+                draw();
+            } else if (pointers.size === 2) {
+                const [a, b] = [...pointers.values()];
+                const other = a === previous ? b : a;
+                const before = Math.hypot(previous.x - other.x, previous.y - other.y);
+                const after = Math.hypot(p.x - other.x, p.y - other.y);
+                if (before > 0) zoomAt((p.x + other.x) / 2, (p.y + other.y) / 2, after / before);
+                dragMoved = true;
+            }
+
+            pointers.set(event.pointerId, p);
+        }
+
+        if (event.pointerType === "mouse" && pointers.size === 0) inspect(p);
+    });
+
+    function endPointer(event) {
+        const p = localPoint(event);
+        const wasTap = pointers.size === 1 && !dragMoved;
+        pointers.delete(event.pointerId);
+        if (pointers.size === 0) canvas.classList.remove("dragging");
+        if (wasTap) inspect(p);
+    }
+
+    canvas.addEventListener("pointerup", endPointer);
+    canvas.addEventListener("pointercancel", (event) => {
+        pointers.delete(event.pointerId);
+        canvas.classList.remove("dragging");
+    });
+
+    canvas.addEventListener("dblclick", (event) => {
+        const p = localPoint(event);
+        zoomAt(p.x, p.y, 2);
+    });
+
+    canvas.addEventListener("keydown", (event) => {
+        const stepPx = 60 / view.scale;
+        const moves = {
+            ArrowLeft: [-stepPx, 0], ArrowRight: [stepPx, 0],
+            ArrowUp: [0, -stepPx], ArrowDown: [0, stepPx]
+        };
+
+        if (moves[event.key]) {
+            view.ox += moves[event.key][0];
+            view.oy += moves[event.key][1];
+            clampView();
+            draw();
+        } else if (event.key === "+" || event.key === "=") {
+            zoomCentre(1.5);
+        } else if (event.key === "-") {
+            zoomCentre(1 / 1.5);
+        } else if (event.key === "0") {
+            resetView();
+        } else {
+            return;
+        }
+        event.preventDefault();
+    });
+
+    // ---------- readout ----------
+
+    function interpolate(grid, field, x, y) {
+        const gx = grid.x;
+        const gy = grid.y;
+        let i = 0;
+        let j = 0;
+        while (i < gx.length - 2 && gx[i + 1] < x) i++;
+        while (j < gy.length - 2 && gy[j + 1] < y) j++;
+        const tx = Math.min(1, Math.max(0, (x - gx[i]) / (gx[i + 1] - gx[i])));
+        const ty = Math.min(1, Math.max(0, (y - gy[j]) / (gy[j + 1] - gy[j])));
+        const f = grid[field];
+        return (1 - tx) * (1 - ty) * f[j][i] + tx * (1 - ty) * f[j][i + 1] +
+               (1 - tx) * ty * f[j + 1][i] + tx * ty * f[j + 1][i + 1];
+    }
+
+    function sexagesimal(value, hours) {
+        const sign = value < 0 ? "−" : hours ? "" : "+";
+        let v = Math.abs(hours ? value / 15 : value);
+        const a = Math.floor(v);
+        v = (v - a) * 60;
+        const b = Math.floor(v);
+        const c = Math.round((v - b) * 60);
+        const pad = (n) => String(n).padStart(2, "0");
+        return hours
+            ? `${pad(a)}h ${pad(b)}m ${pad(c)}s`
+            : `${sign}${pad(a)}° ${pad(b)}′ ${pad(c)}″`;
+    }
+
+    function formatValue(v) {
+        if (v !== v) return "No data";
+        const digits = Math.abs(v) >= 100 ? 0 : Math.abs(v) >= 10 ? 1 : Math.abs(v) >= 1 ? 2 : 3;
+        return `${v.toFixed(digits)} ${meta.unit}`;
+    }
+
+    function inspect(p) {
+        const dx = p.x / view.scale + view.ox;
+        const dy = p.y / view.scale + view.oy;
+        const x = Math.floor(dx);
+        const row = Math.floor(dy);
+
+        if (x < 0 || row < 0 || x >= width || row >= height) {
+            hover = null;
+            draw();
+            return;
+        }
+
+        const y = height - 1 - row;    // FITS row, 0 at the bottom
+        hover = { x, y };
+
+        const grid = meta.grid;
+        let ra = interpolate(grid, "ra", x, y) % 360;
+        if (ra < 0) ra += 360;
+        const dec = interpolate(grid, "dec", x, y);
+
+        $("read-sky").replaceChildren(
+            `RA ${sexagesimal(ra, true)}, Dec ${sexagesimal(dec, false)}`,
+            Object.assign(document.createElement("small"), {
+                textContent: `${ra.toFixed(4)}°, ${dec >= 0 ? "+" : ""}${dec.toFixed(4)}°`
+            })
+        );
+        $("read-pixel").textContent = `x ${x}, y ${y}`;
+        $("read-value").textContent = formatValue(values[y * width + x]);
+        $("read-wave").textContent = `${interpolate(grid, "wavelength_um", x, y).toFixed(3)} µm`;
+
+        let nearest = null;
+        let best = SOURCE_RADIUS;
+        if (meta.sources) {
+            const { x: xs, y: ys, snr } = meta.sources;
+            for (let i = 0; i < xs.length; i++) {
+                const d = Math.hypot(xs[i] - x, ys[i] - y);
+                if (d <= best) { best = d; nearest = i; }
+            }
+        }
+
+        $("read-source").textContent = nearest === null
+            ? "None of the 2,000 strongest nearby"
+            : `Yes, SNR ${Math.round(meta.sources.snr[nearest])}` +
+              (best > 0 ? ` (${best.toFixed(1)} px away)` : "");
+
+        draw();
+    }
+
+    // ---------- controls ----------
+
+    function setPressed(selector, active) {
+        document.querySelectorAll(selector).forEach((button) => {
+            button.setAttribute("aria-pressed", String(button === active));
+        });
+    }
+
+    document.querySelectorAll("[data-cmap]").forEach((button) => {
+        button.addEventListener("click", () => {
+            if (!values) return;
+            cmap = button.dataset.cmap;
+            setPressed("[data-cmap]", button);
+            colourImage();
+            draw();
+        });
+    });
+
+    document.querySelectorAll("[data-stretch]").forEach((button) => {
+        button.addEventListener("click", () => {
+            if (!values) return;
+            stretch = button.dataset.stretch;
+            setPressed("[data-stretch]", button);
+            colourImage();
+            draw();
+        });
+    });
+
+    $("viewer-sources").addEventListener("click", (event) => {
+        showSources = !showSources;
+        event.currentTarget.setAttribute("aria-pressed", String(showSources));
+        draw();
+    });
+
+    $("viewer-zoom-in").addEventListener("click", () => zoomCentre(1.6));
+    $("viewer-zoom-out").addEventListener("click", () => zoomCentre(1 / 1.6));
+    $("viewer-reset").addEventListener("click", resetView);
+
+    new ResizeObserver(() => {
+        if (!offscreen) return;
+        const oldFit = view.fit;
+        resize();
+        view.scale *= view.fit / oldFit;
+        clampView();
+        draw();
+    }).observe(stage);
+
+    // ---------- start: load only when the viewer scrolls into view ----------
+
+    async function start() {
+        try {
+            await load();
+            colourImage();
+            resize();
+            resetView();
+            $("viewer-loading").hidden = true;
+        } catch (error) {
+            $("viewer-loading").textContent = error.message;
+        }
+    }
+
+    let started = false;
+
+    function startWhenNear() {
+        if (started) return;
+        const box = panel.getBoundingClientRect();
+        if (box.top < window.innerHeight + 300 && box.bottom > -300) {
+            started = true;
+            window.removeEventListener("scroll", startWhenNear);
+            window.removeEventListener("resize", startWhenNear);
+            start();
+        }
+    }
+
+    fetch("/api/viewer/meta", { method: "HEAD" })
+        .then((response) => {
+            if (!response.ok) return;
+            panel.hidden = false;
+            window.addEventListener("scroll", startWhenNear, { passive: true });
+            window.addEventListener("resize", startWhenNear);
+            startWhenNear();
+        })
+        .catch(() => {});
+
+})();
 </script>
 
 </body>

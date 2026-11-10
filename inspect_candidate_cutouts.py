@@ -65,7 +65,7 @@ for ax, (_, source) in zip(axes, top.iterrows()):
     )
 
     ax.set_title(
-        f"SNR: {source['snr']:.1f} | Nearby: {len(nearby)}",
+        f"SNR: {source['snr']:.1f} | other sources within 15 px: {len(nearby) - 1}",
         fontsize=10
     )
 
@@ -73,7 +73,7 @@ for ax, (_, source) in zip(axes, top.iterrows()):
     ax.set_yticks([])
 
 fig.suptitle(
-    "SPHERESCAPE: Strongest Candidate Detection Cutouts",
+    "SPHERESCAPE: 12 strongest detections (cyan circles: other detected sources)",
     fontsize=16
 )
 
