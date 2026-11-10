@@ -1,0 +1,15 @@
+# Web app (backend/)
+flask>=3.0
+
+# Astronomy
+astropy>=6.0
+astroquery>=0.4.8   # needs Irsa.query_sia
+
+# Science / plotting
+numpy>=1.26
+scipy>=1.11
+pandas>=2.1
+matplotlib>=3.8
+
+# Archive downloads
+requests>=2.31

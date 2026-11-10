@@ -1,10 +1,16 @@
-@"
+# Python
 venv/
 .venv/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# Large SPHEREx data (download locally, see README)
 *.fits
 *.part
 data/raw/
-"@ | Out-File -Encoding utf8 .gitignore
+
+# Local / OS clutter
+.env
+.DS_Store
+Thumbs.db
