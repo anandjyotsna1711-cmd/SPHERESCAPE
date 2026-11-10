@@ -230,6 +230,37 @@ def science_results():
     return jsonify(payload)
 
 
+VIEWER_DIR = PROJECT_DIR / "results" / "viewer"
+
+
+@app.route("/api/viewer/meta")
+def viewer_meta():
+    """Image size, decoding info and coordinate grids for the image viewer
+    (written by export_viewer_data.py)."""
+
+    path = VIEWER_DIR / "meta.json"
+
+    if not path.exists():
+        return jsonify({"error": "Viewer data not found. Run export_viewer_data.py."}), 404
+
+    return send_file(path, mimetype="application/json", max_age=3600)
+
+
+@app.route("/api/viewer/image")
+def viewer_image():
+    """All pixels of the viewer image: gzipped, byte-shuffled int16.
+    Sent with Content-Encoding: gzip so the browser unzips it for free."""
+
+    path = VIEWER_DIR / "image.i16.gz"
+
+    if not path.exists():
+        return jsonify({"error": "Viewer image not found. Run export_viewer_data.py."}), 404
+
+    response = send_file(path, mimetype="application/octet-stream", max_age=3600)
+    response.headers["Content-Encoding"] = "gzip"
+    return response
+
+
 @app.route("/figures/<path:filename>")
 def figure(filename):
     """Serve images from results/figures/ (send_from_directory blocks ../)."""

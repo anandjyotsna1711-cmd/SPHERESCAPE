@@ -1099,6 +1099,118 @@ button.btn:disabled {
     color: #71839e;
 }
 
+/* IMAGE VIEWER */
+
+.viewer-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 28px;
+    margin: 22px 0 16px;
+}
+
+.viewer-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+}
+
+.viewer-group .chip[aria-pressed="true"] {
+    background: #0b3260;
+    border-color: #3b9bff;
+    color: #fff;
+}
+
+.chip.square {
+    width: 34px;
+    padding: 8px 0;
+    text-align: center;
+}
+
+.viewer-stage {
+    position: relative;
+    height: min(640px, 75vw);
+    min-height: 320px;
+    background: #000;
+    border: 1px solid rgba(75, 135, 200, .2);
+    overflow: hidden;
+}
+
+.viewer-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+}
+
+.viewer-stage canvas.dragging {
+    cursor: grabbing;
+}
+
+.viewer-stage canvas:focus-visible {
+    outline: 2px solid #3b9bff;
+    outline-offset: -2px;
+}
+
+.viewer-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #8fb6dd;
+}
+
+.viewer-zoom {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 5px 9px;
+    background: rgba(2, 6, 14, .8);
+    border: 1px solid rgba(75, 135, 200, .2);
+    font: 10px 'Inter', sans-serif;
+    color: #8fb6dd;
+    pointer-events: none;
+}
+
+.viewer-readout {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 12px;
+    background: rgba(75, 135, 200, .15);
+    border: 1px solid rgba(75, 135, 200, .15);
+}
+
+.viewer-readout > div {
+    background: #050b16;
+    padding: 12px 14px;
+    min-width: 0;
+}
+
+.viewer-readout .label {
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1.2px;
+    color: #71839e;
+}
+
+.viewer-readout .value {
+    margin-top: 7px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #dcecff;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.viewer-readout .value small {
+    display: block;
+    color: #71839e;
+    font-size: 10px;
+}
+
 /* FOOTER */
 
 footer {
@@ -1167,6 +1279,14 @@ footer strong {
 
     .psf-layout {
         grid-template-columns: 1fr;
+    }
+
+    .viewer-readout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .viewer-readout > div:first-child {
+        grid-column: 1 / -1;
     }
 
     .psf-readout {
@@ -1523,6 +1643,79 @@ footer strong {
         The analysis results aren't available on this server yet.
         Run the analysis scripts described in the README to create them.
     </p>
+
+    <div class="glass panel science-panel" id="viewer-panel" hidden>
+        <div class="panel-head">
+            <div class="panel-title">EXPLORE THE IMAGE YOURSELF</div>
+            <div class="panel-note" id="viewer-info"></div>
+        </div>
+        <p class="science-text">
+            This is the full SPHEREx image we analysed: all
+            <strong>4 million pixels</strong>, straight from NASA's data file.
+            <strong>Drag</strong> to move around, <strong>scroll or pinch</strong>
+            to zoom, and <strong>hover or tap</strong> to read any pixel's
+            position in the sky, its brightness and the infrared wavelength it sees.
+        </p>
+
+        <div class="viewer-toolbar">
+            <div class="viewer-group" role="group" aria-label="Colour map">
+                <span class="presets-label">COLOURS</span>
+                <button class="chip" type="button" data-cmap="inferno" aria-pressed="true">Inferno</button>
+                <button class="chip" type="button" data-cmap="viridis" aria-pressed="false">Viridis</button>
+                <button class="chip" type="button" data-cmap="magma" aria-pressed="false">Magma</button>
+                <button class="chip" type="button" data-cmap="grey" aria-pressed="false">Grey</button>
+            </div>
+            <div class="viewer-group" role="group" aria-label="Contrast">
+                <span class="presets-label">CONTRAST</span>
+                <button class="chip" type="button" data-stretch="linear" aria-pressed="false">Bright stars</button>
+                <button class="chip" type="button" data-stretch="asinh" aria-pressed="true">Balanced</button>
+                <button class="chip" type="button" data-stretch="log" aria-pressed="false">Faint detail</button>
+            </div>
+            <div class="viewer-group">
+                <button class="chip" type="button" id="viewer-sources" aria-pressed="false">Circle detected stars</button>
+                <button class="chip square" type="button" id="viewer-zoom-out" aria-label="Zoom out">−</button>
+                <button class="chip square" type="button" id="viewer-zoom-in" aria-label="Zoom in">+</button>
+                <button class="chip" type="button" id="viewer-reset">Reset view</button>
+            </div>
+        </div>
+
+        <div class="viewer-stage" id="viewer-stage">
+            <canvas id="viewer-canvas" tabindex="0"
+                    aria-label="SPHEREx image. Use arrow keys to move, plus and minus to zoom."></canvas>
+            <div class="viewer-loading" id="viewer-loading">Loading the image (4 MB)…</div>
+            <div class="viewer-zoom" id="viewer-zoom" hidden></div>
+        </div>
+
+        <div class="viewer-readout" aria-live="polite">
+            <div>
+                <div class="label">SKY POSITION</div>
+                <div class="value" id="read-sky">Hover over the image</div>
+            </div>
+            <div>
+                <div class="label">PIXEL</div>
+                <div class="value" id="read-pixel">—</div>
+            </div>
+            <div>
+                <div class="label">BRIGHTNESS</div>
+                <div class="value" id="read-value">—</div>
+            </div>
+            <div>
+                <div class="label">WAVELENGTH</div>
+                <div class="value" id="read-wave">—</div>
+            </div>
+            <div>
+                <div class="label">DETECTED STAR</div>
+                <div class="value" id="read-source">—</div>
+            </div>
+        </div>
+
+        <p class="psf-axis-note">
+            The colours aren't real, because infrared has no colour we can see:
+            brighter signal is drawn brighter. Brightness is in MJy/sr, the unit
+            astronomers use for how bright a patch of sky is. Pixel (0, 0) is at the
+            bottom-left. "Circle detected stars" marks the 2,000 strongest of our detections.
+        </p>
+    </div>
 
     <div class="glass panel science-panel" id="psf-panel" hidden>
         <div class="panel-head">
@@ -2308,6 +2501,515 @@ document.addEventListener("keydown", function(event) {
             if (!data.psf && !data.sources) $("science-missing").hidden = false;
         })
         .catch(() => { $("science-missing").hidden = false; });
+
+})();
+
+/* ===================== IMAGE VIEWER ===================== */
+
+(function () {
+
+    const $ = (id) => document.getElementById(id);
+
+    // Ten evenly spaced samples of each matplotlib colour map.
+    const COLOUR_MAPS = {
+        inferno: ["#000004", "#1b0c41", "#4a0c6b", "#781c6d", "#a52c60", "#cf4446", "#ed6925", "#fb9b06", "#f7d13d", "#fcffa4"],
+        viridis: ["#440154", "#482878", "#3e4989", "#31688e", "#26828e", "#1f9e89", "#35b779", "#6ece58", "#b5de2b", "#fde725"],
+        magma:   ["#000004", "#180f3d", "#440f76", "#721f81", "#9e2f7f", "#cd4071", "#f1605d", "#fd9668", "#feca8d", "#fcfdbf"],
+        grey:    ["#000000", "#ffffff"]
+    };
+
+    // How brightness maps to 0..1 before colouring.
+    // "Bright stars" is a plain linear scale; the other two lift faint
+    // pixels progressively more, so faint stars and sky texture show up.
+    const STRETCHES = {
+        linear: { high: "99.5", curve: (t) => t },
+        asinh:  { high: "99.5", curve: (t) => Math.asinh(t * 50) / Math.asinh(50) },
+        log:    { high: "99.5", curve: (t) => Math.log(1 + 1000 * t) / Math.log(1001) }
+    };
+
+    const MIN_ZOOM_FACTOR = 0.8;   // relative to "fit"
+    const MAX_SCALE = 40;          // screen pixels per image pixel
+    const SOURCE_RADIUS = 3;       // pixels, for "detected star" readout
+
+    const panel = $("viewer-panel");
+    const stage = $("viewer-stage");
+    const canvas = $("viewer-canvas");
+    const ctx = canvas.getContext("2d");
+
+    let meta = null;
+    let values = null;            // Float32Array, row 0 = bottom of image
+    let width = 0;
+    let height = 0;
+    let offscreen = null;         // coloured image, display orientation (top row first)
+    let cmap = "inferno";
+    let stretch = "asinh";
+    let showSources = false;
+    let hover = null;             // {x, y} image pixel under the pointer
+
+    // View: screen = (display - origin) * scale, in CSS pixels.
+    const view = { scale: 1, ox: 0, oy: 0, fit: 1 };
+    const pointers = new Map();
+    let dragMoved = false;
+
+    // ---------- loading ----------
+
+    async function load() {
+        const [metaResponse, imageResponse] = await Promise.all([
+            fetch("/api/viewer/meta"),
+            fetch("/api/viewer/image")
+        ]);
+
+        if (!metaResponse.ok || !imageResponse.ok) throw new Error("Viewer data not available.");
+
+        meta = await metaResponse.json();
+        const bytes = new Uint8Array(await imageResponse.arrayBuffer());
+
+        width = meta.width;
+        height = meta.height;
+
+        const n = width * height;
+        const { scale, step, no_data: noData } = meta.encoding;
+
+        if (bytes.length !== 2 * n) throw new Error("Viewer image has the wrong size.");
+
+        // Undo the byte shuffle (low bytes first, then high bytes) and the
+        // asinh quantisation, using a lookup table over all int16 values.
+        const table = new Float32Array(65536);
+        for (let q = -32768; q < 32768; q++) {
+            table[q & 0xffff] = q === noData ? NaN : scale * Math.sinh(q * step);
+        }
+
+        values = new Float32Array(n);
+        for (let i = 0; i < n; i++) {
+            values[i] = table[bytes[i] | (bytes[n + i] << 8)];
+        }
+
+        $("viewer-info").textContent =
+            `Observation ${meta.observation} · detector ${meta.detector} · ${meta.date.slice(0, 10)}`;
+    }
+
+    // ---------- colouring ----------
+
+    function buildLut(stops) {
+        const rgb = stops.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)));
+        const lut = new Uint8ClampedArray(256 * 3);
+
+        for (let i = 0; i < 256; i++) {
+            const position = i / 255 * (rgb.length - 1);
+            const k = Math.min(Math.floor(position), rgb.length - 2);
+            const t = position - k;
+            for (let c = 0; c < 3; c++) {
+                lut[i * 3 + c] = rgb[k][c] + (rgb[k + 1][c] - rgb[k][c]) * t;
+            }
+        }
+        return lut;
+    }
+
+    function colourImage() {
+        const lut = buildLut(COLOUR_MAPS[cmap]);
+        const { high, curve } = STRETCHES[stretch];
+        const lo = meta.percentiles["1"];
+        const hi = meta.percentiles[high];
+
+        // Brightness -> colour index, via a 4096-step table of the curve.
+        const curveTable = new Uint8Array(4096);
+        for (let i = 0; i < 4096; i++) curveTable[i] = Math.round(curve(i / 4095) * 255);
+
+        if (!offscreen) {
+            offscreen = document.createElement("canvas");
+            offscreen.width = width;
+            offscreen.height = height;
+        }
+
+        const octx = offscreen.getContext("2d");
+        const pixels = octx.createImageData(width, height);
+        const out = pixels.data;
+        const range = hi - lo;
+
+        for (let row = 0; row < height; row++) {
+            const source = row * width;
+            const target = (height - 1 - row) * width * 4;   // flip: row 0 at the bottom
+
+            for (let x = 0; x < width; x++) {
+                const v = values[source + x];
+                const o = target + x * 4;
+
+                if (v !== v) {          // NaN: no data
+                    out[o] = 30; out[o + 1] = 30; out[o + 2] = 40; out[o + 3] = 255;
+                    continue;
+                }
+
+                let t = (v - lo) / range;
+                t = t < 0 ? 0 : t > 1 ? 1 : t;
+                const c = curveTable[(t * 4095) | 0] * 3;
+
+                out[o] = lut[c]; out[o + 1] = lut[c + 1]; out[o + 2] = lut[c + 2]; out[o + 3] = 255;
+            }
+        }
+
+        octx.putImageData(pixels, 0, 0);
+    }
+
+    // ---------- drawing ----------
+
+    function resize() {
+        const box = stage.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.round(box.width * dpr);
+        canvas.height = Math.round(box.height * dpr);
+        view.fit = Math.min(box.width / width, box.height / height);
+    }
+
+    function resetView() {
+        const box = stage.getBoundingClientRect();
+        view.scale = view.fit;
+        view.ox = (width - box.width / view.scale) / 2;
+        view.oy = (height - box.height / view.scale) / 2;
+        draw();
+    }
+
+    function draw() {
+        if (!offscreen) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const s = view.scale * dpr;
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.imageSmoothingEnabled = view.scale < 1;
+        ctx.setTransform(s, 0, 0, s, -view.ox * s, -view.oy * s);
+        ctx.drawImage(offscreen, 0, 0);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        if (showSources && meta.sources) {
+            const radius = Math.max(3, view.scale * 2);
+            ctx.strokeStyle = "rgba(90, 220, 255, .9)";
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+
+            const { x: xs, y: ys } = meta.sources;
+            for (let i = 0; i < xs.length; i++) {
+                const sx = (xs[i] + 0.5 - view.ox) * view.scale;
+                const sy = (height - 1 - ys[i] + 0.5 - view.oy) * view.scale;
+                if (sx < -radius || sy < -radius || sx > canvas.width / dpr + radius || sy > canvas.height / dpr + radius) continue;
+                ctx.moveTo(sx + radius, sy);
+                ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+            }
+            ctx.stroke();
+        }
+
+        // Outline the hovered pixel once pixels are big enough to see.
+        if (hover && view.scale >= 6) {
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(
+                (hover.x - view.ox) * view.scale + 0.5,
+                (height - 1 - hover.y - view.oy) * view.scale + 0.5,
+                view.scale - 1, view.scale - 1
+            );
+        }
+
+        const zoom = view.scale / view.fit;
+        $("viewer-zoom").hidden = false;
+        $("viewer-zoom").textContent = view.scale >= 1
+            ? `${zoom.toFixed(zoom < 10 ? 1 : 0)}× · 1 pixel = ${view.scale.toFixed(view.scale < 10 ? 1 : 0)} screen px`
+            : `${zoom.toFixed(1)}×`;
+    }
+
+    // ---------- navigation ----------
+
+    function clampView() {
+        const box = stage.getBoundingClientRect();
+        const visibleW = box.width / view.scale;
+        const visibleH = box.height / view.scale;
+
+        // Keep at least a quarter of the view on the image.
+        view.ox = Math.min(Math.max(view.ox, -visibleW * 0.75), width - visibleW * 0.25);
+        view.oy = Math.min(Math.max(view.oy, -visibleH * 0.75), height - visibleH * 0.25);
+    }
+
+    function zoomAt(sx, sy, factor) {
+        const next = Math.min(MAX_SCALE, Math.max(view.fit * MIN_ZOOM_FACTOR, view.scale * factor));
+        const dx = sx / view.scale + view.ox;
+        const dy = sy / view.scale + view.oy;
+        view.scale = next;
+        view.ox = dx - sx / next;
+        view.oy = dy - sy / next;
+        clampView();
+        draw();
+    }
+
+    function zoomCentre(factor) {
+        const box = stage.getBoundingClientRect();
+        zoomAt(box.width / 2, box.height / 2, factor);
+    }
+
+    function localPoint(event) {
+        const box = canvas.getBoundingClientRect();
+        return { x: event.clientX - box.left, y: event.clientY - box.top };
+    }
+
+    canvas.addEventListener("wheel", (event) => {
+        if (!offscreen) return;
+        event.preventDefault();
+        const p = localPoint(event);
+        zoomAt(p.x, p.y, Math.exp(-event.deltaY * 0.0015));
+    }, { passive: false });
+
+    canvas.addEventListener("pointerdown", (event) => {
+        if (!offscreen) return;
+        try {
+            canvas.setPointerCapture(event.pointerId);
+        } catch {
+            // Capture can fail (e.g. the pointer already lifted); dragging still works.
+        }
+        pointers.set(event.pointerId, localPoint(event));
+        dragMoved = false;
+        canvas.classList.add("dragging");
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+        if (!offscreen) return;
+        const p = localPoint(event);
+
+        if (pointers.has(event.pointerId)) {
+            const previous = pointers.get(event.pointerId);
+
+            if (pointers.size === 1) {
+                const dx = p.x - previous.x;
+                const dy = p.y - previous.y;
+                if (Math.abs(dx) + Math.abs(dy) > 2) dragMoved = true;
+                view.ox -= dx / view.scale;
+                view.oy -= dy / view.scale;
+                clampView();
+                draw();
+            } else if (pointers.size === 2) {
+                const [a, b] = [...pointers.values()];
+                const other = a === previous ? b : a;
+                const before = Math.hypot(previous.x - other.x, previous.y - other.y);
+                const after = Math.hypot(p.x - other.x, p.y - other.y);
+                if (before > 0) zoomAt((p.x + other.x) / 2, (p.y + other.y) / 2, after / before);
+                dragMoved = true;
+            }
+
+            pointers.set(event.pointerId, p);
+        }
+
+        if (event.pointerType === "mouse" && pointers.size === 0) inspect(p);
+    });
+
+    function endPointer(event) {
+        const p = localPoint(event);
+        const wasTap = pointers.size === 1 && !dragMoved;
+        pointers.delete(event.pointerId);
+        if (pointers.size === 0) canvas.classList.remove("dragging");
+        if (wasTap) inspect(p);
+    }
+
+    canvas.addEventListener("pointerup", endPointer);
+    canvas.addEventListener("pointercancel", (event) => {
+        pointers.delete(event.pointerId);
+        canvas.classList.remove("dragging");
+    });
+
+    canvas.addEventListener("dblclick", (event) => {
+        const p = localPoint(event);
+        zoomAt(p.x, p.y, 2);
+    });
+
+    canvas.addEventListener("keydown", (event) => {
+        const stepPx = 60 / view.scale;
+        const moves = {
+            ArrowLeft: [-stepPx, 0], ArrowRight: [stepPx, 0],
+            ArrowUp: [0, -stepPx], ArrowDown: [0, stepPx]
+        };
+
+        if (moves[event.key]) {
+            view.ox += moves[event.key][0];
+            view.oy += moves[event.key][1];
+            clampView();
+            draw();
+        } else if (event.key === "+" || event.key === "=") {
+            zoomCentre(1.5);
+        } else if (event.key === "-") {
+            zoomCentre(1 / 1.5);
+        } else if (event.key === "0") {
+            resetView();
+        } else {
+            return;
+        }
+        event.preventDefault();
+    });
+
+    // ---------- readout ----------
+
+    function interpolate(grid, field, x, y) {
+        const gx = grid.x;
+        const gy = grid.y;
+        let i = 0;
+        let j = 0;
+        while (i < gx.length - 2 && gx[i + 1] < x) i++;
+        while (j < gy.length - 2 && gy[j + 1] < y) j++;
+        const tx = Math.min(1, Math.max(0, (x - gx[i]) / (gx[i + 1] - gx[i])));
+        const ty = Math.min(1, Math.max(0, (y - gy[j]) / (gy[j + 1] - gy[j])));
+        const f = grid[field];
+        return (1 - tx) * (1 - ty) * f[j][i] + tx * (1 - ty) * f[j][i + 1] +
+               (1 - tx) * ty * f[j + 1][i] + tx * ty * f[j + 1][i + 1];
+    }
+
+    function sexagesimal(value, hours) {
+        const sign = value < 0 ? "−" : hours ? "" : "+";
+        let v = Math.abs(hours ? value / 15 : value);
+        const a = Math.floor(v);
+        v = (v - a) * 60;
+        const b = Math.floor(v);
+        const c = Math.round((v - b) * 60);
+        const pad = (n) => String(n).padStart(2, "0");
+        return hours
+            ? `${pad(a)}h ${pad(b)}m ${pad(c)}s`
+            : `${sign}${pad(a)}° ${pad(b)}′ ${pad(c)}″`;
+    }
+
+    function formatValue(v) {
+        if (v !== v) return "No data";
+        const digits = Math.abs(v) >= 100 ? 0 : Math.abs(v) >= 10 ? 1 : Math.abs(v) >= 1 ? 2 : 3;
+        return `${v.toFixed(digits)} ${meta.unit}`;
+    }
+
+    function inspect(p) {
+        const dx = p.x / view.scale + view.ox;
+        const dy = p.y / view.scale + view.oy;
+        const x = Math.floor(dx);
+        const row = Math.floor(dy);
+
+        if (x < 0 || row < 0 || x >= width || row >= height) {
+            hover = null;
+            draw();
+            return;
+        }
+
+        const y = height - 1 - row;    // FITS row, 0 at the bottom
+        hover = { x, y };
+
+        const grid = meta.grid;
+        let ra = interpolate(grid, "ra", x, y) % 360;
+        if (ra < 0) ra += 360;
+        const dec = interpolate(grid, "dec", x, y);
+
+        $("read-sky").replaceChildren(
+            `RA ${sexagesimal(ra, true)}, Dec ${sexagesimal(dec, false)}`,
+            Object.assign(document.createElement("small"), {
+                textContent: `${ra.toFixed(4)}°, ${dec >= 0 ? "+" : ""}${dec.toFixed(4)}°`
+            })
+        );
+        $("read-pixel").textContent = `x ${x}, y ${y}`;
+        $("read-value").textContent = formatValue(values[y * width + x]);
+        $("read-wave").textContent = `${interpolate(grid, "wavelength_um", x, y).toFixed(3)} µm`;
+
+        let nearest = null;
+        let best = SOURCE_RADIUS;
+        if (meta.sources) {
+            const { x: xs, y: ys, snr } = meta.sources;
+            for (let i = 0; i < xs.length; i++) {
+                const d = Math.hypot(xs[i] - x, ys[i] - y);
+                if (d <= best) { best = d; nearest = i; }
+            }
+        }
+
+        $("read-source").textContent = nearest === null
+            ? "None of the 2,000 strongest nearby"
+            : `Yes, SNR ${Math.round(meta.sources.snr[nearest])}` +
+              (best > 0 ? ` (${best.toFixed(1)} px away)` : "");
+
+        draw();
+    }
+
+    // ---------- controls ----------
+
+    function setPressed(selector, active) {
+        document.querySelectorAll(selector).forEach((button) => {
+            button.setAttribute("aria-pressed", String(button === active));
+        });
+    }
+
+    document.querySelectorAll("[data-cmap]").forEach((button) => {
+        button.addEventListener("click", () => {
+            if (!values) return;
+            cmap = button.dataset.cmap;
+            setPressed("[data-cmap]", button);
+            colourImage();
+            draw();
+        });
+    });
+
+    document.querySelectorAll("[data-stretch]").forEach((button) => {
+        button.addEventListener("click", () => {
+            if (!values) return;
+            stretch = button.dataset.stretch;
+            setPressed("[data-stretch]", button);
+            colourImage();
+            draw();
+        });
+    });
+
+    $("viewer-sources").addEventListener("click", (event) => {
+        showSources = !showSources;
+        event.currentTarget.setAttribute("aria-pressed", String(showSources));
+        draw();
+    });
+
+    $("viewer-zoom-in").addEventListener("click", () => zoomCentre(1.6));
+    $("viewer-zoom-out").addEventListener("click", () => zoomCentre(1 / 1.6));
+    $("viewer-reset").addEventListener("click", resetView);
+
+    new ResizeObserver(() => {
+        if (!offscreen) return;
+        const oldFit = view.fit;
+        resize();
+        view.scale *= view.fit / oldFit;
+        clampView();
+        draw();
+    }).observe(stage);
+
+    // ---------- start: load only when the viewer scrolls into view ----------
+
+    async function start() {
+        try {
+            await load();
+            colourImage();
+            resize();
+            resetView();
+            $("viewer-loading").hidden = true;
+        } catch (error) {
+            $("viewer-loading").textContent = error.message;
+        }
+    }
+
+    let started = false;
+
+    function startWhenNear() {
+        if (started) return;
+        const box = panel.getBoundingClientRect();
+        if (box.top < window.innerHeight + 300 && box.bottom > -300) {
+            started = true;
+            window.removeEventListener("scroll", startWhenNear);
+            window.removeEventListener("resize", startWhenNear);
+            start();
+        }
+    }
+
+    fetch("/api/viewer/meta", { method: "HEAD" })
+        .then((response) => {
+            if (!response.ok) return;
+            panel.hidden = false;
+            window.addEventListener("scroll", startWhenNear, { passive: true });
+            window.addEventListener("resize", startWhenNear);
+            startWhenNear();
+        })
+        .catch(() => {});
 
 })();
 </script>

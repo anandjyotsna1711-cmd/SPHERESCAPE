@@ -81,6 +81,7 @@ Open http://127.0.0.1:5000.
 | `/api/resolve?name=<object>` | Turns an object name into RA/Dec. Exact names and catalogue IDs (`M31`, `NGC 224`) go through CDS Sesame. Anything else falls back to the closest SIMBAD match, so `Canis Major` finds the Canis Major Dwarf Galaxy; `exact: false` and `alternatives` say when that happened. |
 | `/api/science` | Precomputed analysis results for the "What we found" section: `results/psf_zones.json` and `results/source_validation.json` |
 | `/figures/<name>` | Images from `results/figures/` |
+| `/api/viewer/meta`, `/api/viewer/image` | Data for the interactive image viewer, from `results/viewer/` (see `export_viewer_data.py`) |
 | `/api/fits/summary` | Pixel stats, metadata, WCS centre, flags and variance for the local FITS file |
 
 Example: `http://127.0.0.1:5000/api/observations/matched?ra=10.68&dec=41.27&radius=10`
@@ -111,7 +112,9 @@ Current result for observation `2026W20_2A_0191_4` (detector 2, a crowded Milky 
 
 Random positions land on a 2MASS star 19% of the time, so 19% is the chance level. The strongest 10,000 detections match 99.6%, in both versions. The old detector skipped background subtraction, and after subtraction the real pixel scatter is ~5× what the `VARIANCE` layer predicts, so its "5σ" was really about 1σ. Single-pixel detections match no better than chance (21%), which is why they're rejected. Known limit: the brightest stars (J < 10) are only 73% recovered, because their saturated centres are masked.
 
-**Website data:** after the PSF steps below, `export_psf_web_data.py` writes `results/psf_zones.json`, which feeds the interactive detector map.
+**Website data:**
+- After the PSF steps below, `export_psf_web_data.py` writes `results/psf_zones.json`, which feeds the interactive detector map.
+- `export_viewer_data.py` writes `results/viewer/`, which feeds the image viewer. It holds every pixel of the image (about 4 MB: an asinh scale stored as 16-bit integers, then compressed; the error is well below the image noise), coarse RA/Dec and wavelength grids for hover readouts, and the 2,000 strongest detections. Run it after `detect_sources.py`.
 
 **PSF vs wavelength.** SPHEREx's filter wavelength changes across the detector, so each of the 121 PSF zones sees a different wavelength.
 1. `analyze_psf.py` measures peak intensity and central energy fraction for each PSF zone. It writes `psf_analysis.csv`.
@@ -144,6 +147,7 @@ frontend/templates/
 data/processed/           Committed images served by the app
 results/figures/          Committed analysis figures
 results/*.json            Small analysis results served at /api/science
+results/viewer/           Compressed image and metadata for the image viewer
 *.py                      Science scripts (see section 4)
 ```
 
@@ -161,7 +165,10 @@ The other three are **in development**:
 - **Change Detector**: highlight differences between aligned observations.
 - **Spectral Explorer**: show how each wavelength reveals different features.
 
-Section 05 of the page, **What we found**, shows the team's own analysis: an interactive map of PSF sharpness and wavelength across the detector, and the source-detection results checked against 2MASS.
+Section 05 of the page, **What we found**, shows the team's own analysis:
+- an **image viewer** for the full 2040 × 2040 SPHEREx image, with pan, zoom and pinch, four colour maps, three contrast settings, an overlay of detected stars, and hover/tap readouts of sky position, brightness and wavelength;
+- an interactive map of PSF sharpness and wavelength across the detector;
+- the source-detection results, checked against 2MASS.
 
 Known issues:
 - The web app's sample image and the scripts use two different observations (see section 2).
