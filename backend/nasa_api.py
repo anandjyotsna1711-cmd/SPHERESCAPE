@@ -7,6 +7,8 @@ from astropy.utils.data import conf
 from pathlib import Path
 import numpy as np
 
+from observation_matcher import summarize_observations
+
 
 # PROJECT CONFIGURATION
 
@@ -74,7 +76,7 @@ def search_spherex_observations(
 
     observations = []
 
-    for row in results[:limit]:
+    for row in results:
 
         observation = {}
 
@@ -102,6 +104,17 @@ def search_spherex_observations(
 
         observations.append(observation)
 
+    # Newest first, so a limited response shows the latest visits.
+    observations.sort(
+        key=lambda item: item.get("t_min") or 0,
+        reverse=True
+    )
+
+    # Summarise every match before trimming to the limit.
+    summary = summarize_observations(observations)
+
+    observations = observations[:limit]
+
     print("Products returned:", len(observations))
 
     return {
@@ -109,5 +122,6 @@ def search_spherex_observations(
         "collection": COLLECTION,
         "total_found": len(results),
         "returned": len(observations),
+        "summary": summary,
         "observations": observations
     }

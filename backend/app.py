@@ -3,13 +3,25 @@ from pathlib import Path
 
 from flask import Flask, render_template, send_file, jsonify, request
 
+from astropy.coordinates import SkyCoord
+from astropy.coordinates.name_resolve import NameResolveError, sesame_url
+
 from nasa_api import search_spherex_observations
 
 from fits_processor import get_fits_summary
 
 from observation_matcher import group_observations
 
+from name_search import find_closest_objects
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
+
+# Object-name lookup (Sesame): try the Harvard mirror first. The CDS
+# server can hang for ~20 s on some networks before falling back.
+sesame_url.set([
+    "https://vizier.cfa.harvard.edu/viz-bin/nph-sesame/",
+    "https://cds.unistra.fr/cgi-bin/nph-sesame/"
+])
 
 app = Flask(
     __name__,
@@ -117,6 +129,7 @@ def matched_observations():
             "mission": "SPHEREx",
             "archive_total": result["total_found"],
             "returned_products": result["returned"],
+            "archive_summary": result["summary"],
             "matching_results": grouped
         })
 
@@ -132,6 +145,68 @@ def matched_observations():
             "error": "Could not group observations.",
             "details": str(error)
         }), 500
+@app.route("/api/resolve")
+def resolve_name():
+
+    name = (request.args.get("name") or "").strip()
+
+    if not name or len(name) > 100:
+        return jsonify({
+            "error": "Please enter an object name (e.g. M31 or Orion Nebula)."
+        }), 400
+
+    # 1. Exact name or catalogue ID (M31, NGC 224, Betelgeuse...).
+    try:
+        coordinate = SkyCoord.from_name(name)
+
+        return jsonify({
+            "name": name,
+            "matched_name": name,
+            "exact": True,
+            "ra": float(coordinate.ra.deg),
+            "dec": float(coordinate.dec.deg),
+            "alternatives": []
+        })
+
+    except NameResolveError:
+        pass
+
+    except Exception as error:
+        print("Exact name lookup error:", repr(error))
+
+    # 2. Closest match: proper names containing every word typed,
+    #    e.g. "Canis Major" -> "Canis Major Dwarf Galaxy".
+    try:
+        matches = find_closest_objects(name)
+
+    except Exception as error:
+        print("Closest-match lookup error:", repr(error))
+
+        return jsonify({
+            "error": "The name lookup service is unavailable right now. "
+                     "Try again, or search by coordinates.",
+            "details": str(error)
+        }), 502
+
+    if not matches:
+        return jsonify({
+            "error": f"Couldn't find anything called '{name}'. Check the "
+                     "spelling, or try a catalogue name such as M31 or NGC 224."
+        }), 404
+
+    best = matches[0]
+
+    return jsonify({
+        "name": name,
+        "matched_name": best["name"],
+        "matched_type": best["type"],
+        "exact": False,
+        "ra": best["ra"],
+        "dec": best["dec"],
+        "alternatives": matches[1:]
+    })
+
+
 @app.route("/api/fits/summary")
 def fits_summary():
 

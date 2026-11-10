@@ -523,6 +523,397 @@ h2 {
     margin-top: 17px;
 }
 
+/* COSMIC EXPLORER */
+
+[hidden] {
+    display: none !important;
+}
+
+a.module {
+    display: block;
+}
+
+.module-status.live {
+    color: #7fe0a8;
+}
+
+.explorer-panel {
+    display: grid;
+    gap: 22px;
+}
+
+.explorer-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+    flex: 1 1 120px;
+}
+
+.field.grow {
+    flex: 4 1 260px;
+}
+
+.field span,
+.presets-label,
+.panel-title {
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1.5px;
+    color: #7186a4;
+}
+
+.field input {
+    width: 100%;
+    background: rgba(2, 6, 14, .85);
+    border: 1px solid rgba(75, 135, 200, .25);
+    color: var(--white);
+    font: 500 14px 'Inter', sans-serif;
+    padding: 13px 14px;
+    border-radius: 3px;
+    outline: none;
+    transition: .25s;
+}
+
+.field input:focus {
+    border-color: #3b9bff;
+    box-shadow: 0 0 0 3px rgba(22, 140, 255, .15);
+}
+
+button.btn {
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+button.btn:disabled {
+    opacity: .45;
+    cursor: wait;
+    transform: none;
+}
+
+.presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    align-items: center;
+}
+
+.presets-label {
+    margin-right: 6px;
+}
+
+.chip {
+    background: rgba(10, 35, 65, .3);
+    border: 1px solid rgba(70, 145, 220, .25);
+    color: #9fd3ff;
+    font: 500 11px 'Inter', sans-serif;
+    padding: 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.chip:hover {
+    border-color: #3b9bff;
+    color: #d6eeff;
+}
+
+.chip:disabled {
+    opacity: .45;
+    cursor: wait;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border);
+}
+
+.explorer-status {
+    min-height: 18px;
+    font-size: 12px;
+    color: #8fb6dd;
+    line-height: 1.6;
+}
+
+.explorer-status.error {
+    color: #ff8f8f;
+}
+
+.explorer-match {
+    display: grid;
+    gap: 12px;
+    padding: 14px 16px;
+    border-left: 2px solid #3b9bff;
+    background: rgba(10, 35, 65, .25);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c4d8ee;
+}
+
+.explorer-match strong {
+    color: #fff;
+}
+
+.explorer-match .presets {
+    gap: 7px;
+}
+
+.spinner {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(90, 174, 255, .3);
+    border-top-color: #5aaeff;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: -1px;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#explorer-results {
+    scroll-margin-top: 90px;
+}
+
+.results-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 38px;
+}
+
+.results-title {
+    font: 600 18px 'Orbitron', sans-serif;
+}
+
+.explorer-stats {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.stat-value.small {
+    font-size: 17px;
+}
+
+.panel {
+    margin-top: 16px;
+    padding: 24px;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.panel-note {
+    font-size: 11px;
+    color: #71839e;
+}
+
+/* Wavelength coverage */
+
+.spectrum {
+    position: relative;
+    height: 26px;
+    border-radius: 3px;
+    background: rgba(2, 6, 14, .85);
+    border: 1px solid rgba(75, 135, 200, .18);
+    overflow: hidden;
+}
+
+.spectrum-segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid #02040a;
+}
+
+.spectrum-axis {
+    position: relative;
+    height: 14px;
+    font: 9px 'Orbitron', sans-serif;
+    color: #566b86;
+    margin-top: 8px;
+}
+
+.spectrum-axis span {
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.spectrum-axis span:last-child {
+    transform: translateX(-100%);
+}
+
+.band-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.band {
+    padding: 12px;
+    border-radius: 3px;
+    background: rgba(2, 6, 14, .6);
+    border: 1px solid rgba(75, 135, 200, .15);
+    border-top: 3px solid var(--band);
+}
+
+.band.missing {
+    border-top-color: #1b2638;
+    opacity: .55;
+}
+
+.band-name {
+    font: 600 11px 'Orbitron', sans-serif;
+}
+
+.band-range {
+    font-size: 10px;
+    color: #71839e;
+    margin-top: 5px;
+}
+
+.band-count {
+    font: 600 16px 'Orbitron', sans-serif;
+    margin-top: 10px;
+    color: #dcecff;
+}
+
+.band-count span {
+    font: 400 9px 'Inter', sans-serif;
+    color: #71839e;
+    margin-left: 4px;
+}
+
+/* Visit timeline */
+
+.timeline {
+    position: relative;
+    height: 120px;
+    border-bottom: 1px solid rgba(75, 135, 200, .3);
+}
+
+.timeline-bar {
+    position: absolute;
+    bottom: 0;
+    width: 5px;
+    margin-left: -2px;
+    min-height: 3px;
+    background: linear-gradient(0deg, #176bce, #6cc4ff);
+    border-radius: 2px 2px 0 0;
+    box-shadow: 0 0 10px rgba(22, 140, 255, .35);
+}
+
+.timeline-labels {
+    position: relative;
+    height: 22px;
+    margin-top: 8px;
+}
+
+.timeline-labels span {
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font: 9px 'Orbitron', sans-serif;
+    color: #566b86;
+}
+
+.timeline-labels span.first {
+    transform: none;
+}
+
+.timeline-labels span.last {
+    transform: translateX(-100%);
+}
+
+/* Observation list */
+
+.obs-list {
+    display: grid;
+    gap: 8px;
+}
+
+.obs-row {
+    display: grid;
+    grid-template-columns: 170px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 13px 15px;
+    border-radius: 3px;
+    background: rgba(2, 6, 14, .55);
+    border: 1px solid rgba(75, 135, 200, .12);
+}
+
+.obs-date {
+    font: 500 12px 'Inter', sans-serif;
+    color: #dcecff;
+}
+
+.obs-date small {
+    display: block;
+    font-size: 10px;
+    color: #71839e;
+    margin-top: 3px;
+}
+
+.obs-id {
+    font: 10px 'Orbitron', sans-serif;
+    color: #7f95b3;
+    overflow-wrap: anywhere;
+}
+
+.obs-products {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.product-link {
+    font: 500 11px 'Inter', sans-serif;
+    padding: 7px 10px;
+    border-radius: 3px;
+    border: 1px solid rgba(75, 135, 200, .25);
+    border-left: 3px solid var(--band);
+    color: #b9dcff;
+    white-space: nowrap;
+    transition: .25s;
+}
+
+.product-link:hover {
+    background: rgba(22, 107, 206, .18);
+    color: #fff;
+}
+
+.show-more {
+    margin-top: 14px;
+}
+
+.empty-state {
+    margin-top: 38px;
+    padding: 28px;
+    text-align: center;
+    color: #8799b3;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
 /* FOOTER */
 
 footer {
@@ -575,6 +966,20 @@ footer strong {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .explorer-stats,
+    .band-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .obs-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .obs-products {
+        justify-content: flex-start;
+    }
+
     .navlinks {
         gap: 14px;
     }
@@ -608,6 +1013,21 @@ footer strong {
         grid-template-columns: 1fr;
     }
 
+    .explorer-stats,
+    .band-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .explorer-row .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dashboard,
+    .panel {
+        padding: 18px;
+    }
+
     .mission-banner {
         padding: 28px;
     }
@@ -629,6 +1049,7 @@ footer strong {
         <a href="#observatory">Observatory</a>
         <a href="#gallery">Discover</a>
         <a href="#modules">Explore</a>
+        <a href="#explorer">Search</a>
         <a href="#mission">Mission</a>
     </div>
 
@@ -753,12 +1174,12 @@ footer strong {
     </p>
 
     <div class="modules">
-        <div class="glass module">
+        <a class="glass module" href="#explorer">
             <div class="module-icon">⌖</div>
             <h3>Cosmic Explorer</h3>
             <p>Navigate real observations and explore regions of the infrared sky.</p>
-            <span class="module-status">IN DEVELOPMENT</span>
-        </div>
+            <span class="module-status live">● LIVE — LAUNCH ↓</span>
+        </a>
 
         <div class="glass module">
             <div class="module-icon">◷</div>
@@ -783,9 +1204,117 @@ footer strong {
     </div>
 </section>
 
+<section class="section" id="explorer">
+    <div class="section-label">04 — COSMIC EXPLORER</div>
+    <h2>Point SPHEREx anywhere in the sky.</h2>
+    <p class="subheading">
+        Search NASA's live SPHEREx archive by object name or sky
+        coordinates. See when the telescope looked there, which infrared
+        bands it captured, and download the original images.
+    </p>
+
+    <div class="glass dashboard explorer-panel">
+        <form id="name-form" class="explorer-row">
+            <label class="field grow">
+                <span>OBJECT NAME</span>
+                <input id="object-name" type="text" maxlength="100"
+                       placeholder="e.g. M31, Orion Nebula, Canis Major"
+                       autocomplete="off">
+            </label>
+            <button class="btn primary" type="submit">LOOK UP ↗</button>
+        </form>
+
+        <div class="presets" id="presets">
+            <span class="presets-label">OR TRY</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <form id="coord-form" class="explorer-row">
+            <label class="field">
+                <span>RA (DEG)</span>
+                <input id="ra" type="number" step="any" min="0" max="360"
+                       required placeholder="0 – 360">
+            </label>
+            <label class="field">
+                <span>DEC (DEG)</span>
+                <input id="dec" type="number" step="any" min="-90" max="90"
+                       required placeholder="-90 – 90">
+            </label>
+            <label class="field">
+                <span>RADIUS (ARCSEC)</span>
+                <input id="radius" type="number" step="any" min="0.1"
+                       max="3600" value="10" required>
+            </label>
+            <button class="btn secondary" type="submit">SCAN THE SKY</button>
+        </form>
+
+        <div id="explorer-status" class="explorer-status"
+             role="status" aria-live="polite"></div>
+
+        <div id="explorer-match" class="explorer-match" hidden></div>
+    </div>
+
+    <div id="explorer-results" hidden>
+        <div class="results-head">
+            <div class="results-title" id="results-title"></div>
+            <div class="tag" id="results-coords"></div>
+        </div>
+
+        <div class="stats explorer-stats">
+            <div class="glass stat">
+                <div class="stat-label">IMAGES IN ARCHIVE</div>
+                <div class="stat-value" id="stat-images"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">DAYS OBSERVED</div>
+                <div class="stat-value" id="stat-days"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">FIRST SEEN</div>
+                <div class="stat-value small" id="stat-first"></div>
+            </div>
+            <div class="glass stat">
+                <div class="stat-label">LAST SEEN</div>
+                <div class="stat-value small" id="stat-last"></div>
+            </div>
+        </div>
+
+        <div class="glass panel">
+            <div class="panel-head">
+                <div class="panel-title">WAVELENGTH COVERAGE · 0.75 – 5.0 µm</div>
+                <div class="panel-note">Each SPHEREx detector sees one slice of the infrared.</div>
+            </div>
+            <div class="spectrum" id="spectrum"></div>
+            <div class="spectrum-axis" id="spectrum-axis"></div>
+            <div class="band-grid" id="band-grid"></div>
+        </div>
+
+        <div class="glass panel">
+            <div class="panel-head">
+                <div class="panel-title">WHEN SPHEREx LOOKED HERE</div>
+                <div class="panel-note">Images taken per day</div>
+            </div>
+            <div class="timeline" id="timeline"></div>
+            <div class="timeline-labels" id="timeline-labels"></div>
+        </div>
+
+        <div class="glass panel">
+            <div class="panel-head">
+                <div class="panel-title">LATEST OBSERVATIONS</div>
+                <div class="panel-note" id="obs-note"></div>
+            </div>
+            <div class="obs-list" id="obs-list"></div>
+            <button class="btn secondary show-more" id="show-more" type="button" hidden>SHOW MORE</button>
+        </div>
+    </div>
+
+    <div class="glass empty-state" id="explorer-empty" hidden></div>
+</section>
+
 <section class="section" id="mission">
     <div class="mission-banner">
-        <div class="section-label">04 — THE BIGGER PICTURE</div>
+        <div class="section-label">05 — THE BIGGER PICTURE</div>
         <h2>There is an entire universe hiding beyond visible light.</h2>
         <p>
             SPHERESCAPE is an exploration platform by ASTRAVIA,
@@ -818,6 +1347,446 @@ function closeLightbox() {
 document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") closeLightbox();
 });
+
+/* ===================== COSMIC EXPLORER ===================== */
+
+(function () {
+
+    // SPHEREx's six detectors, each covering one slice of the infrared.
+    const BANDS = [
+        { band: 1, min: 0.75, max: 1.11, color: "#6f8cff" },
+        { band: 2, min: 1.11, max: 1.64, color: "#4fc3f7" },
+        { band: 3, min: 1.64, max: 2.42, color: "#4dd6a6" },
+        { band: 4, min: 2.42, max: 3.82, color: "#e6d35a" },
+        { band: 5, min: 3.82, max: 4.42, color: "#f5a04b" },
+        { band: 6, min: 4.42, max: 5.01, color: "#ef6461" }
+    ];
+
+    const SPECTRUM_MIN = 0.75;
+    const SPECTRUM_MAX = 5.01;
+
+    // Coordinates in degrees (J2000), so presets skip the name lookup.
+    const PRESETS = [
+        { name: "Andromeda Galaxy", ra: 10.6847, dec: 41.2688 },
+        { name: "Orion Nebula", ra: 83.8221, dec: -5.3911 },
+        { name: "Pleiades", ra: 56.75, dec: 24.1167 },
+        { name: "Crab Nebula", ra: 83.6331, dec: 22.0145 },
+        { name: "Galactic Centre", ra: 266.4168, dec: -29.0078 },
+        { name: "North Ecliptic Pole (deep field)", ra: 270.0, dec: 66.5607 }
+    ];
+
+    const PAGE_SIZE = 15;
+
+    const $ = (id) => document.getElementById(id);
+
+    const statusBox = $("explorer-status");
+    const matchBox = $("explorer-match");
+    const results = $("explorer-results");
+    const empty = $("explorer-empty");
+    const raInput = $("ra");
+    const decInput = $("dec");
+    const radiusInput = $("radius");
+    const showMore = $("show-more");
+
+    let requestId = 0;
+    let timer = null;
+    let epochs = [];
+    let shown = 0;
+    let lastVisits = null;
+
+    function el(tag, props = {}, children = []) {
+        const node = document.createElement(tag);
+
+        for (const [key, value] of Object.entries(props)) {
+            if (value === undefined || value === null) continue;
+            if (key === "className") node.className = value;
+            else if (key === "style") node.style.cssText = value;
+            else node.setAttribute(key, value);
+        }
+
+        node.append(...[].concat(children));
+        return node;
+    }
+
+    function percent(wavelength) {
+        return (wavelength - SPECTRUM_MIN) / (SPECTRUM_MAX - SPECTRUM_MIN) * 100;
+    }
+
+    function formatDate(isoDate) {
+        const date = new Date(isoDate.length === 10 ? isoDate + "T00:00:00Z" : isoDate + "Z");
+        return date.toLocaleDateString("en-GB", {
+            day: "numeric", month: "short", year: "numeric", timeZone: "UTC"
+        });
+    }
+
+    function formatTime(isoDate) {
+        return isoDate.slice(11, 16) + " UTC";
+    }
+
+    // ---------- status line ----------
+
+    function showStatus(text, { loading = false, error = false } = {}) {
+        statusBox.replaceChildren();
+        statusBox.classList.toggle("error", error);
+        if (loading) statusBox.append(el("span", { className: "spinner" }));
+        statusBox.append(text);
+    }
+
+    function startTimer(label) {
+        stopTimer();
+        const start = Date.now();
+        const tick = () => showStatus(
+            `${label} ${Math.floor((Date.now() - start) / 1000)}s`,
+            { loading: true }
+        );
+        tick();
+        timer = setInterval(tick, 1000);
+    }
+
+    function stopTimer() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    function setBusy(busy) {
+        document
+            .querySelectorAll("#explorer form button, #presets button, #explorer-match button")
+            .forEach((button) => { button.disabled = busy; });
+    }
+
+    async function getJSON(url) {
+        const response = await fetch(url);
+        let data;
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(`The server returned an error (${response.status}).`);
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || `Request failed (${response.status}).`);
+        }
+
+        return data;
+    }
+
+    // "No exact match for X — showing Y. Other matches: [A] [B]"
+    function showMatch(found) {
+        if (!found || found.exact) {
+            matchBox.hidden = true;
+            matchBox.replaceChildren();
+            return;
+        }
+
+        const kind = found.matched_type ? `, a ${found.matched_type}` : "";
+        const parts = [
+            el("div", {}, [
+                "No object is called exactly “", found.name, "”, so this shows the closest match: ",
+                el("strong", {}, [found.matched_name]), kind, "."
+            ])
+        ];
+
+        if (found.alternatives && found.alternatives.length) {
+            const chips = found.alternatives.map((alt) => {
+                const label = alt.type ? `${alt.name} (${alt.type})` : alt.name;
+                const button = el("button", { type: "button", className: "chip" }, [label]);
+                button.addEventListener("click", () => {
+                    $("object-name").value = alt.name;
+                    explore({ ra: alt.ra, dec: alt.dec, label: alt.name });
+                });
+                return button;
+            });
+
+            parts.push(el("div", { className: "presets" }, [
+                el("span", { className: "presets-label" }, ["DID YOU MEAN"]),
+                ...chips
+            ]));
+        }
+
+        matchBox.replaceChildren(...parts);
+        matchBox.hidden = false;
+    }
+
+    // ---------- search flow ----------
+
+    async function explore({ name = null, ra = null, dec = null, label = null }) {
+        const id = ++requestId;
+        let found = null;
+
+        setBusy(true);
+
+        try {
+            if (name) {
+                startTimer(`Looking up “${name}”…`);
+                found = await getJSON("/api/resolve?name=" + encodeURIComponent(name));
+                if (id !== requestId) return;
+                ra = found.ra;
+                dec = found.dec;
+                label = found.exact ? name : found.matched_name;
+                showMatch(found);
+            } else {
+                // Clicking a suggestion keeps the suggestions visible.
+                if (!matchBox.contains(document.activeElement)) showMatch(null);
+            }
+
+            raInput.value = Number(ra.toFixed(5));
+            decInput.value = Number(dec.toFixed(5));
+
+            const radius = Number(radiusInput.value) || 10;
+            const started = Date.now();
+
+            startTimer("Searching NASA's SPHEREx archive — this can take up to a minute…");
+
+            const params = new URLSearchParams({ ra, dec, radius, limit: 100 });
+            const data = await getJSON("/api/observations/matched?" + params);
+
+            if (id !== requestId) return;
+
+            stopTimer();
+            render(data, { ra, dec, radius, label });
+
+            const seconds = ((Date.now() - started) / 1000).toFixed(1);
+            showStatus(`Archive answered in ${seconds}s.`);
+
+        } catch (error) {
+            if (id !== requestId) return;
+            stopTimer();
+            showMatch(null);
+            showStatus(error.message, { error: true });
+
+        } finally {
+            if (id === requestId) setBusy(false);
+        }
+    }
+
+    // ---------- rendering ----------
+
+    function render(data, query) {
+        const summary = data.archive_summary;
+        const place = query.label || "these coordinates";
+
+        if (!summary || summary.total_images === 0) {
+            results.hidden = true;
+            empty.hidden = false;
+            empty.textContent =
+                `SPHEREx hasn't released any images of ${place} yet. ` +
+                "Try a larger radius or another object.";
+            return;
+        }
+
+        empty.hidden = true;
+        results.hidden = false;
+
+        $("results-title").textContent = query.label || "Custom coordinates";
+        $("results-coords").textContent =
+            `RA ${query.ra.toFixed(4)}° · DEC ${query.dec.toFixed(4)}° · R ${query.radius}″`;
+
+        $("stat-images").textContent = summary.total_images.toLocaleString("en-GB");
+        $("stat-days").textContent = summary.visit_dates.length.toLocaleString("en-GB");
+        $("stat-first").textContent = formatDate(summary.first_date);
+        $("stat-last").textContent = formatDate(summary.last_date);
+
+        renderSpectrum(summary.bands);
+        renderTimeline(summary.visit_dates);
+        renderObservations(data);
+
+        results.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderSpectrum(bands) {
+        const found = Object.fromEntries(bands.map((item) => [item.band, item]));
+
+        $("spectrum").replaceChildren(...BANDS.map((band) => {
+            const seen = found[band.band];
+            const left = percent(band.min);
+            const width = percent(band.max) - left;
+
+            return el("div", {
+                className: "spectrum-segment",
+                title: `Band ${band.band}: ${band.min}–${band.max} µm — ` +
+                       (seen ? `${seen.images} images` : "not observed here"),
+                style: `left:${left}%;width:${width}%;` +
+                       `background:${seen ? band.color : "transparent"};` +
+                       `box-shadow:${seen ? `0 0 14px ${band.color}55` : "none"}`
+            });
+        }));
+
+        $("band-grid").replaceChildren(...BANDS.map((band) => {
+            const seen = found[band.band];
+
+            return el("div", {
+                className: "band" + (seen ? "" : " missing"),
+                style: `--band:${band.color}`
+            }, [
+                el("div", { className: "band-name" }, [`BAND ${band.band}`]),
+                el("div", { className: "band-range" }, [`${band.min.toFixed(2)}–${band.max.toFixed(2)} µm`]),
+                el("div", { className: "band-count" }, seen
+                    ? [String(seen.images), el("span", {}, ["images"])]
+                    : ["—", el("span", {}, ["not seen"])])
+            ]);
+        }));
+    }
+
+    function renderTimeline(visits) {
+        lastVisits = visits;
+
+        const times = visits.map((visit) => Date.parse(visit.date + "T00:00:00Z"));
+        const first = Math.min(...times);
+        const last = Math.max(...times);
+        const span = last - first;
+        const most = Math.max(...visits.map((visit) => visit.images));
+
+        const position = (time) => span === 0 ? 50 : 2 + (time - first) / span * 96;
+
+        $("timeline").replaceChildren(...visits.map((visit, index) => el("div", {
+            className: "timeline-bar",
+            title: `${formatDate(visit.date)}: ${visit.images} image${visit.images === 1 ? "" : "s"}`,
+            style: `left:${position(times[index])}%;height:${Math.max(4, visit.images / most * 100)}%`
+        })));
+
+        // Labels: first and last day, plus regularly spaced month marks
+        // that never collide, whatever the screen width.
+        const labels = [];
+
+        if (span === 0) {
+            labels.push(el("span", { style: "left:50%" }, [formatDate(visits[0].date)]));
+        } else {
+            labels.push(el("span", { className: "first", style: "left:0" }, [formatDate(visits[0].date)]));
+
+            const width = $("timeline").clientWidth || 600;
+            const END_LABEL = 70;
+            const HALF_MONTH = 26;
+            const PADDING = 14;
+
+            // Label every 1/2/3/6/12 months: the smallest step that keeps
+            // month labels at least ~120px apart.
+            const pixelsPerMonth = width * 0.96 / (span / (30.44 * 86400000));
+            const step = [1, 2, 3, 6, 12].find((s) => s * pixelsPerMonth >= 120) || 12;
+
+            const month = new Date(first);
+            month.setUTCDate(1);
+            month.setUTCMonth(month.getUTCMonth() + 1);
+
+            while (month.getTime() < last) {
+                const x = position(month.getTime());
+                const centre = x / 100 * width;
+
+                if (month.getUTCMonth() % step === 0 &&
+                    centre - HALF_MONTH >= END_LABEL + PADDING &&
+                    centre + HALF_MONTH <= width - END_LABEL - PADDING) {
+                    labels.push(el("span", { style: `left:${x}%` }, [
+                        month.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" })
+                    ]));
+                }
+
+                month.setUTCMonth(month.getUTCMonth() + 1);
+            }
+
+            labels.push(el("span", { className: "last", style: "left:100%" }, [formatDate(visits[visits.length - 1].date)]));
+        }
+
+        $("timeline-labels").replaceChildren(...labels);
+    }
+
+    function productLink(product) {
+        const band = BANDS.find((item) => item.band === product.band);
+        const color = band ? band.color : "#5aaeff";
+        const range = (product.wavelength_min_m && product.wavelength_max_m)
+            ? `${(product.wavelength_min_m * 1e6).toFixed(2)}–${(product.wavelength_max_m * 1e6).toFixed(2)} µm`
+            : "unknown band";
+        const size = product.size_mb ? ` · ${Math.round(product.size_mb)} MB` : "";
+        const text = `${band ? "B" + band.band + " · " : ""}${range}${size} ↓`;
+        const url = product.access_url || "";
+
+        if (!url.startsWith("https://")) {
+            return el("span", { className: "product-link", style: `--band:${color}` }, [text]);
+        }
+
+        return el("a", {
+            className: "product-link",
+            href: url,
+            target: "_blank",
+            rel: "noopener",
+            title: "Download the original FITS image",
+            style: `--band:${color}`
+        }, [text]);
+    }
+
+    function renderObservations(data) {
+        epochs = data.matching_results.epochs.slice().reverse();
+        shown = 0;
+
+        $("obs-list").replaceChildren();
+        $("obs-note").textContent =
+            `Showing the ${data.returned_products} most recent of ` +
+            `${data.archive_total.toLocaleString("en-GB")} images · full FITS files`;
+
+        appendObservations();
+    }
+
+    function appendObservations() {
+        const next = epochs.slice(shown, shown + PAGE_SIZE);
+
+        $("obs-list").append(...next.map((epoch) => el("div", { className: "obs-row" }, [
+            el("div", { className: "obs-date" }, [
+                formatDate(epoch.date),
+                el("small", {}, [formatTime(epoch.date)])
+            ]),
+            el("div", { className: "obs-id" }, [epoch.observation_id]),
+            el("div", { className: "obs-products" }, epoch.products.map(productLink))
+        ])));
+
+        shown += next.length;
+        showMore.hidden = shown >= epochs.length;
+    }
+
+    // ---------- wiring ----------
+
+    $("spectrum-axis").replaceChildren(...[1, 2, 3, 4, 5].map((micron) =>
+        el("span", { style: `left:${percent(micron)}%` }, [micron === 5 ? "5 µm" : `${micron}`])
+    ));
+
+    PRESETS.forEach((preset) => {
+        const button = el("button", { type: "button", className: "chip" }, [preset.name]);
+        button.addEventListener("click", () => {
+            showMatch(null);
+            explore({ ra: preset.ra, dec: preset.dec, label: preset.name });
+        });
+        $("presets").append(button);
+    });
+
+    $("name-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = $("object-name").value.trim();
+
+        if (!name) {
+            showStatus("Type an object name first, e.g. M31.", { error: true });
+            return;
+        }
+
+        explore({ name });
+    });
+
+    $("coord-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        showMatch(null);
+        explore({ ra: Number(raInput.value), dec: Number(decInput.value) });
+    });
+
+    showMore.addEventListener("click", appendObservations);
+
+    // Re-space the timeline labels when the screen size changes.
+    let resizeTimer = null;
+
+    window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (lastVisits && !results.hidden) renderTimeline(lastVisits);
+        }, 150);
+    });
+
+})();
 </script>
 
 </body>

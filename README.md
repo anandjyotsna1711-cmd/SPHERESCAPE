@@ -6,7 +6,7 @@ The repository has two parts:
 
 | Part | Where | What it does |
 |---|---|---|
-| **Web app** | `backend/`, `frontend/` | A Flask server and landing page. It shows a processed SPHEREx observation and has API routes that search the NASA/IPAC (IRSA) archive by sky position. |
+| **Web app** | `backend/`, `frontend/` | A Flask server and landing page. It shows a processed SPHEREx observation, and its Cosmic Explorer searches the NASA/IPAC (IRSA) archive by object name or sky position. |
 | **Science scripts** | repo root (`*.py`) | Standalone analysis of one SPHEREx Level 2 image: source detection, quality flags, PSF behaviour across the detector, and wavelength calibration. |
 
 ---
@@ -76,13 +76,16 @@ Open http://127.0.0.1:5000.
 |---|---|
 | `/` | Landing page |
 | `/first-light` | Processed observation image (PNG) |
-| `/api/observations?ra=<deg>&dec=<deg>&radius=<arcsec>&limit=<n>` | Searches the IRSA SPHEREx archive (`spherex_qr2`) at a sky position |
-| `/api/observations/matched?ra=...&dec=...` | The same search, grouped into observation epochs by date |
+| `/api/observations?ra=<deg>&dec=<deg>&radius=<arcsec>&limit=<n>` | Searches the IRSA SPHEREx archive (`spherex_qr2`) at a sky position. Products are returned newest first. |
+| `/api/observations/matched?ra=...&dec=...` | The same search, grouped into one entry per observation, plus an `archive_summary` |
+| `/api/resolve?name=<object>` | Turns an object name into RA/Dec. Exact names and catalogue IDs (`M31`, `NGC 224`) go through CDS Sesame. Anything else falls back to the closest SIMBAD match, so `Canis Major` finds the Canis Major Dwarf Galaxy; `exact: false` and `alternatives` say when that happened. |
 | `/api/fits/summary` | Pixel stats, metadata, WCS centre, flags and variance for the local FITS file |
 
 Example: `http://127.0.0.1:5000/api/observations/matched?ra=10.68&dec=41.27&radius=10`
 
-The archive search needs internet access and can take up to a minute.
+`archive_summary` covers **every** matching image, even when `limit` trims the product list. It includes the total, the first and last dates, images per day (`visit_dates`), and images per SPHEREx band (`bands`, 1–6).
+
+The archive search needs internet access and usually takes 5–10 seconds, sometimes up to a minute.
 
 ---
 
@@ -112,7 +115,8 @@ Many scripts call `plt.show()`. Close the plot window for the script to finish. 
 backend/
   app.py                  Flask server and API routes
   nasa_api.py             IRSA SIA archive search
-  observation_matcher.py  Groups archive products into observation epochs
+  observation_matcher.py  Groups archive products into observations, summarises dates and bands
+  name_search.py          Closest-match object-name search (SIMBAD)
   fits_processor.py       FITS summary for /api/fits/summary
   footprint_checker.py    Sky footprint (corner RA/Dec) of the image
   visualize_fits.py       Builds data/processed/spherex_first_light.png
@@ -127,10 +131,13 @@ results/figures/          Committed analysis figures
 
 ## 6. Roadmap
 
-The landing page lists four modules, all **in development**:
+The landing page lists four modules:
 
-- **Cosmic Explorer**: search and browse observations by sky position. `/api/observations/matched` already exists, but the front end doesn't call it yet.
-- **Time Traveller**: compare observations from different dates (uses the epoch grouping).
+- **Cosmic Explorer** (**live**, section 04 of the page): search by object name (partial names work), a preset, or RA/Dec. It shows how many images SPHEREx has of that spot, which of its six infrared bands they cover, a timeline of visits, and download links for the latest FITS files.
+
+The other three are **in development**:
+
+- **Time Traveller**: compare observations from different dates. It can build on Cosmic Explorer's visit timeline.
 - **Change Detector**: highlight differences between aligned observations.
 - **Spectral Explorer**: show how each wavelength reveals different features.
 
