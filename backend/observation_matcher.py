@@ -37,6 +37,34 @@ def wavelength_to_band(wavelength_min_m, wavelength_max_m):
     return None
 
 
+def parse_footprint(region):
+    """
+    Turn an archive s_region like "POLYGON ICRS 6.96 41.75 11.28 43.13 ..."
+    into [[ra, dec], ...]. Returns None if it isn't a polygon.
+    """
+
+    if not region or "POLYGON" not in str(region).upper():
+        return None
+
+    numbers = []
+    for token in str(region).split():
+        try:
+            numbers.append(round(float(token), 4))
+        except ValueError:
+            continue
+
+    if len(numbers) < 6 or len(numbers) % 2:
+        return None
+
+    points = [numbers[i:i + 2] for i in range(0, len(numbers), 2)]
+
+    # Drop a repeated closing vertex.
+    if len(points) > 3 and points[0] == points[-1]:
+        points = points[:-1]
+
+    return points
+
+
 def summarize_observations(observations):
     """Summarise every archive product: when it was seen and in which bands."""
 
@@ -120,6 +148,7 @@ def group_observations(observations):
             ),
             "center_ra": item.get("s_ra"),
             "center_dec": item.get("s_dec"),
+            "footprint": parse_footprint(item.get("s_region")),
             "access_url": item.get("access_url")
         }
 

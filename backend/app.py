@@ -230,6 +230,19 @@ def science_results():
     return jsonify(payload)
 
 
+@app.route("/sky-dome.jpg")
+def sky_dome_texture():
+    """SPHEREx all-sky map re-projected to RA/Dec for the Cosmic Explorer
+    sky dome (built by build_sky_dome_texture.py)."""
+
+    path = PROJECT_DIR / "data" / "processed" / "sky_dome_spherex.jpg"
+
+    if not path.exists():
+        return jsonify({"error": "Sky texture not found. Run build_sky_dome_texture.py."}), 404
+
+    return send_file(path, mimetype="image/jpeg", max_age=86400)
+
+
 VIEWER_DIR = PROJECT_DIR / "results" / "viewer"
 
 

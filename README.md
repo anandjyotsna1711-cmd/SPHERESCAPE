@@ -76,8 +76,9 @@ Open http://127.0.0.1:5000.
 |---|---|
 | `/` | Landing page |
 | `/first-light` | Processed observation image (PNG) |
+| `/sky-dome.jpg` | SPHEREx all-sky map re-projected to RA/Dec for the sky dome (built by `build_sky_dome_texture.py`) |
 | `/api/observations?ra=<deg>&dec=<deg>&radius=<arcsec>&limit=<n>` | Searches the IRSA SPHEREx archive (`spherex_qr2`) at a sky position. Products are returned newest first. |
-| `/api/observations/matched?ra=...&dec=...` | The same search, grouped into one entry per observation, plus an `archive_summary` |
+| `/api/observations/matched?ra=...&dec=...` | The same search, grouped into one entry per observation, plus an `archive_summary`. Each product includes its sky `footprint` as `[[ra, dec], ...]` corners |
 | `/api/resolve?name=<object>` | Turns an object name into RA/Dec. Exact names and catalogue IDs (`M31`, `NGC 224`) go through CDS Sesame. Anything else falls back to the closest SIMBAD match, so `Canis Major` finds the Canis Major Dwarf Galaxy; `exact: false` and `alternatives` say when that happened. |
 | `/api/science` | Precomputed analysis results for the "What we found" section: `results/psf_zones.json` and `results/source_validation.json` |
 | `/figures/<name>` | Images from `results/figures/` |
@@ -113,6 +114,7 @@ Current result for observation `2026W20_2A_0191_4` (detector 2, a crowded Milky 
 Random positions land on a 2MASS star 19% of the time, so 19% is the chance level. The strongest 10,000 detections match 99.6%, in both versions. The old detector skipped background subtraction, and after subtraction the real pixel scatter is ~5× what the `VARIANCE` layer predicts, so its "5σ" was really about 1σ. Single-pixel detections match no better than chance (21%), which is why they're rejected. Known limit: the brightest stars (J < 10) are only 73% recovered, because their saturated centres are masked.
 
 **Website data:**
+- `build_sky_dome_texture.py` downloads NASA's SPHEREx all-sky map (a Mollweide oval in Galactic coordinates) and re-projects it to a 4096 × 2048 RA/Dec map, `data/processed/sky_dome_spherex.jpg`, for the sky dome. Checked against the Magellanic Clouds, M31, the Orion Nebula and the Galactic centre.
 - After the PSF steps below, `export_psf_web_data.py` writes `results/psf_zones.json`, which feeds the interactive detector map.
 - `export_viewer_data.py` writes `results/viewer/`, which feeds the image viewer. It holds every pixel of the image (about 4 MB: an asinh scale stored as 16-bit integers, then compressed; the error is well below the image noise), coarse RA/Dec and wavelength grids for hover readouts, and the 2,000 strongest detections. Run it after `detect_sources.py`.
 
@@ -144,7 +146,7 @@ backend/
   visualize_fits.py       Builds data/processed/spherex_first_light.png
 frontend/templates/
   index.html              Landing page
-data/processed/           Committed images served by the app
+data/processed/           Committed images served by the app (incl. the sky-dome texture)
 results/figures/          Committed analysis figures
 results/*.json            Small analysis results served at /api/science
 results/viewer/           Compressed image and metadata for the image viewer
@@ -157,7 +159,10 @@ results/viewer/           Compressed image and metadata for the image viewer
 
 The landing page lists four modules:
 
-- **Cosmic Explorer** (**live**, section 04 of the page): search by object name (partial names work), a preset, or RA/Dec. It shows how many images SPHEREx has of that spot, which of its six infrared bands they cover, a timeline of visits, and download links for the latest FITS files.
+- **Cosmic Explorer** (**live**, section 04 of the page): a **sky dome**. You stand inside the sky like in a planetarium, with SPHEREx's real all-sky infrared map overhead.
+  - Drag to look around and scroll or pinch to zoom.
+  - Click any spot, a marker for a famous object, a preset, or search by name (partial names work) or RA/Dec.
+  - The dome flies to the target and outlines SPHEREx's latest images there. Below, it shows how many images exist, which of the six infrared bands they cover, a timeline of visits, and download links for the FITS files.
 
 The other three are **in development**:
 

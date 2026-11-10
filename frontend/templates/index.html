@@ -914,6 +914,88 @@ button.btn:disabled {
     line-height: 1.8;
 }
 
+/* SKY DOME */
+
+.dome-stage {
+    position: relative;
+    height: min(560px, 70vw);
+    min-height: 360px;
+    background: #000;
+    border: 1px solid rgba(75, 135, 200, .25);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dome-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#dome-overlay {
+    touch-action: none;
+    cursor: crosshair;
+}
+
+#dome-overlay.dragging {
+    cursor: grabbing;
+}
+
+#dome-overlay:focus-visible {
+    outline: 2px solid #3b9bff;
+    outline-offset: -2px;
+}
+
+.dome-hint,
+.dome-readout,
+.dome-fov {
+    position: absolute;
+    pointer-events: none;
+    font: 9px 'Orbitron', sans-serif;
+    letter-spacing: 1.2px;
+    color: #9fc4e8;
+    text-shadow: 0 1px 3px #000;
+}
+
+.dome-hint {
+    top: 14px;
+    left: 16px;
+    right: 16px;
+}
+
+.dome-readout {
+    left: 16px;
+    bottom: 14px;
+}
+
+.dome-fov {
+    right: 16px;
+    bottom: 14px;
+}
+
+.dome-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #8fb6dd;
+    background: #000;
+}
+
+.dome-caption {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 10px;
+    font-size: 10px;
+    color: #566b86;
+}
+
 /* SCIENCE RESULTS */
 
 .science-panel {
@@ -1336,6 +1418,26 @@ footer strong {
         text-align: center;
     }
 
+    .dome-stage {
+        height: 100vw;
+        max-height: 420px;
+        min-height: 300px;
+    }
+
+    .dome-hint {
+        font-size: 8px;
+    }
+
+    /* Stack the two bottom labels so they don't collide. */
+    .dome-readout {
+        bottom: 32px;
+    }
+
+    .dome-fov {
+        left: 16px;
+        right: auto;
+    }
+
     .completeness-row {
         grid-template-columns: 96px minmax(0, 1fr) 40px;
         gap: 10px;
@@ -1541,6 +1643,22 @@ footer strong {
             </label>
             <button class="btn primary" type="submit">LOOK UP ↗</button>
         </form>
+
+        <div class="dome-wrap" id="dome-wrap" hidden>
+            <div class="dome-stage" id="dome-stage">
+                <canvas id="dome-gl" aria-hidden="true"></canvas>
+                <canvas id="dome-overlay" tabindex="0"
+                        aria-label="Sky dome. Drag or use arrow keys to look around, plus and minus to zoom, Enter to search the centre of the view."></canvas>
+                <div class="dome-hint">DRAG TO LOOK AROUND · SCROLL OR PINCH TO ZOOM · CLICK ANY SPOT TO SEARCH IT</div>
+                <div class="dome-readout" id="dome-readout"></div>
+                <div class="dome-fov" id="dome-fov"></div>
+                <div class="dome-loading" id="dome-loading">Loading the SPHEREx sky…</div>
+            </div>
+            <div class="dome-caption">
+                <span>Sky: SPHEREx's infrared map of the whole sky (NASA/JPL-Caltech). The bright band is the Milky Way.</span>
+                <span>As seen from Earth: north up, east left.</span>
+            </div>
+        </div>
 
         <div class="presets" id="presets">
             <span class="presets-label">OR TRY</span>
@@ -1837,6 +1955,635 @@ document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") closeLightbox();
 });
 
+/* ===================== SKY DOME ===================== */
+/*
+ * You stand inside the celestial sphere and look out, like in a planetarium.
+ * The sky texture is SPHEREx's all-sky map re-projected to RA/Dec
+ * (build_sky_dome_texture.py). The view uses a stereographic projection,
+ * which keeps shapes undistorted and curves wide views like a dome.
+ * Exposes window.skyDome for Cosmic Explorer to drive.
+ */
+
+(function () {
+
+    const $ = (id) => document.getElementById(id);
+    const DEG = Math.PI / 180;
+
+    const wrap = $("dome-wrap");
+    const stage = $("dome-stage");
+    const glCanvas = $("dome-gl");
+    const overlay = $("dome-overlay");
+    const octx = overlay.getContext("2d");
+
+    const MIN_FOV = 1.5;
+    const MAX_FOV = 150;
+
+    const state = { ra: 84, dec: 8, fov: 110 };
+    let target = null;
+    let footprints = [];
+    let markers = [];
+    let markerHits = [];
+    let gl = null;
+    let uniforms = null;
+    let ready = false;
+    let frameRequested = false;
+    let animation = null;
+    const handlers = { pick: null, marker: null };
+
+    // ---------- geometry ----------
+
+    const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+    function toVector(ra, dec) {
+        const a = ra * DEG;
+        const d = dec * DEG;
+        return [Math.cos(d) * Math.cos(a), Math.cos(d) * Math.sin(a), Math.sin(d)];
+    }
+
+    function toRaDec(v) {
+        let ra = Math.atan2(v[1], v[0]) / DEG;
+        if (ra < 0) ra += 360;
+        return { ra, dec: Math.asin(Math.max(-1, Math.min(1, v[2]))) / DEG };
+    }
+
+    // Forward = view centre; right = west, up = north (inside view: east is left).
+    function basis() {
+        const a = state.ra * DEG;
+        const d = state.dec * DEG;
+        return {
+            F: toVector(state.ra, state.dec),
+            R: [Math.sin(a), -Math.cos(a), 0],
+            U: [-Math.sin(d) * Math.cos(a), -Math.sin(d) * Math.sin(a), Math.cos(d)]
+        };
+    }
+
+    function viewSize() {
+        return { w: overlay.clientWidth, h: overlay.clientHeight };
+    }
+
+    // Screen pixels per unit of stereographic radius, so the shorter side spans the field of view.
+    function pixelScale() {
+        const { w, h } = viewSize();
+        return (Math.min(w, h) / 2) / (2 * Math.tan(state.fov * DEG / 4));
+    }
+
+    function project(v, B, s, w, h) {
+        const theta = Math.acos(Math.max(-1, Math.min(1, dot(v, B.F))));
+        if (theta > 170 * DEG) return null;
+        const r = 2 * Math.tan(theta / 2);
+        const a = dot(v, B.R);
+        const b = dot(v, B.U);
+        const n = Math.hypot(a, b);
+        if (n < 1e-12) return { x: w / 2, y: h / 2 };
+        return { x: w / 2 + r * a / n * s, y: h / 2 - r * b / n * s };
+    }
+
+    function unproject(px, py) {
+        const { w, h } = viewSize();
+        const s = pixelScale();
+        const B = basis();
+        const qx = (px - w / 2) / s;
+        const qy = -(py - h / 2) / s;
+        const r = Math.hypot(qx, qy);
+        if (r < 1e-12) return toRaDec(B.F);
+        const theta = 2 * Math.atan(r / 2);
+        const c = Math.cos(theta);
+        const sn = Math.sin(theta);
+        return toRaDec([0, 1, 2].map((i) => c * B.F[i] + sn * (qx / r * B.R[i] + qy / r * B.U[i])));
+    }
+
+    function formatRaDec(ra, dec) {
+        const h = ra / 15;
+        const hh = Math.floor(h);
+        const mm = Math.floor((h - hh) * 60);
+        const sign = dec < 0 ? "−" : "+";
+        const ad = Math.abs(dec);
+        const dd = Math.floor(ad);
+        const dm = Math.floor((ad - dd) * 60);
+        const pad = (n) => String(n).padStart(2, "0");
+        return `RA ${pad(hh)}h ${pad(mm)}m · DEC ${sign}${pad(dd)}° ${pad(dm)}′`;
+    }
+
+    // ---------- WebGL sky ----------
+
+    const VERTEX = "attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }";
+
+    const FRAGMENT = `
+        precision highp float;
+        uniform sampler2D sky;
+        uniform vec3 F;
+        uniform vec3 R;
+        uniform vec3 U;
+        uniform vec2 size;
+        uniform float scale;
+        void main() {
+            vec2 q = (gl_FragCoord.xy - 0.5 * size) / scale;
+            float r = length(q);
+            float theta = 2.0 * atan(r * 0.5);
+            vec3 d = F;
+            if (r > 1e-6) d = cos(theta) * F + sin(theta) * (q.x / r * R + q.y / r * U);
+            float ra = atan(d.y, d.x);
+            float dec = asin(clamp(d.z, -1.0, 1.0));
+            vec2 uv = vec2(fract(ra / 6.28318530718), 0.5 - dec / 3.14159265359);
+            vec3 colour = texture2D(sky, uv).rgb;
+            // Darken towards the rim of wide views, like the edge of a dome.
+            colour *= 1.0 - 0.6 * smoothstep(1.3, 2.5, theta);
+            gl_FragColor = vec4(colour, 1.0);
+        }`;
+
+    function initGL() {
+        gl = glCanvas.getContext("webgl", { antialias: false, preserveDrawingBuffer: false });
+        if (!gl) return false;
+
+        const compile = (type, source) => {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+            return shader;
+        };
+
+        const program = gl.createProgram();
+        gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX));
+        gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAGMENT));
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const location = gl.getAttribLocation(program, "p");
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 0, 0);
+
+        uniforms = {};
+        ["sky", "F", "R", "U", "size", "scale"].forEach((name) => {
+            uniforms[name] = gl.getUniformLocation(program, name);
+        });
+
+        return true;
+    }
+
+    function loadTexture() {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+
+            image.onload = () => {
+                let source = image;
+                const max = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+
+                // Older phones may not take a 4096-wide texture: shrink to fit.
+                if (image.width > max) {
+                    const small = document.createElement("canvas");
+                    small.width = max;
+                    small.height = max / 2;
+                    small.getContext("2d").drawImage(image, 0, 0, small.width, small.height);
+                    source = small;
+                }
+
+                const texture = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.uniform1i(uniforms.sky, 0);
+                resolve();
+            };
+
+            image.onerror = () => reject(new Error("Couldn't load the sky map."));
+            image.src = "/sky-dome.jpg";
+        });
+    }
+
+    // ---------- drawing ----------
+
+    function requestDraw() {
+        if (frameRequested) return;
+        frameRequested = true;
+        requestAnimationFrame(frame);
+    }
+
+    function frame(time) {
+        frameRequested = false;
+
+        if (animation) {
+            const done = stepAnimation(time);
+            if (!done) requestDraw();
+        }
+
+        draw();
+    }
+
+    function resizeCanvases() {
+        const { w, h } = viewSize();
+        const dpr = window.devicePixelRatio || 1;
+        const W = Math.max(1, Math.round(w * dpr));
+        const H = Math.max(1, Math.round(h * dpr));
+
+        for (const canvas of [glCanvas, overlay]) {
+            if (canvas.width !== W || canvas.height !== H) {
+                canvas.width = W;
+                canvas.height = H;
+            }
+        }
+        return { w, h, dpr };
+    }
+
+    function draw() {
+        if (!ready) return;
+
+        const { w, h, dpr } = resizeCanvases();
+        const B = basis();
+        const s = pixelScale();
+
+        gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+        gl.uniform3fv(uniforms.F, B.F);
+        gl.uniform3fv(uniforms.R, B.R);
+        gl.uniform3fv(uniforms.U, B.U);
+        gl.uniform2f(uniforms.size, glCanvas.width, glCanvas.height);
+        gl.uniform1f(uniforms.scale, s * dpr);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        octx.clearRect(0, 0, w, h);
+
+        drawGrid(B, s, w, h);
+        drawFootprints(B, s, w, h);
+        drawMarkers(B, s, w, h);
+        drawTarget(B, s, w, h);
+
+        $("dome-fov").textContent = `FIELD OF VIEW ${state.fov < 10 ? state.fov.toFixed(1) : Math.round(state.fov)}°`;
+    }
+
+    // Draw a path through sky points, breaking it where it leaves the view.
+    function strokeSkyPath(points, B, s, w, h, closed) {
+        octx.beginPath();
+        let previous = null;
+
+        const list = closed ? points.concat([points[0]]) : points;
+
+        for (const v of list) {
+            const p = project(v, B, s, w, h);
+            if (!p || (previous && Math.hypot(p.x - previous.x, p.y - previous.y) > Math.max(w, h))) {
+                previous = null;
+                continue;
+            }
+            if (previous) octx.lineTo(p.x, p.y);
+            else octx.moveTo(p.x, p.y);
+            previous = p;
+        }
+        octx.stroke();
+    }
+
+    function drawGrid(B, s, w, h) {
+        const step = Math.max(0.25, Math.min(2, state.fov / 40));
+        octx.lineWidth = 1;
+
+        // Declination circles every 30 degrees; the celestial equator a bit brighter.
+        for (let dec = -60; dec <= 60; dec += 30) {
+            const points = [];
+            for (let ra = 0; ra <= 360; ra += step) points.push(toVector(ra, dec));
+            octx.strokeStyle = dec === 0 ? "rgba(140, 190, 255, .35)" : "rgba(140, 190, 255, .14)";
+            strokeSkyPath(points, B, s, w, h, false);
+        }
+
+        // Right ascension lines every 2 hours (30 degrees).
+        octx.strokeStyle = "rgba(140, 190, 255, .14)";
+        for (let ra = 0; ra < 360; ra += 30) {
+            const points = [];
+            for (let dec = -88; dec <= 88; dec += step) points.push(toVector(ra, dec));
+            strokeSkyPath(points, B, s, w, h, false);
+        }
+
+        // Hour labels along the equator.
+        octx.font = "10px Inter, sans-serif";
+        octx.fillStyle = "rgba(170, 205, 245, .6)";
+        for (let ra = 0; ra < 360; ra += 30) {
+            const p = project(toVector(ra, 0), B, s, w, h);
+            if (p && p.x > 10 && p.x < w - 30 && p.y > 30 && p.y < h - 30) {
+                octx.fillText(`${ra / 15}h`, p.x + 4, p.y - 4);
+            }
+        }
+    }
+
+    function drawFootprints(B, s, w, h) {
+        if (!footprints.length) return;
+
+        octx.lineWidth = 1.5;
+        octx.strokeStyle = "rgba(90, 225, 255, .85)";
+        octx.fillStyle = "rgba(90, 225, 255, .07)";
+
+        for (const polygon of footprints) {
+            // Densify edges so they follow great circles at any zoom.
+            const corners = polygon.map(([ra, dec]) => toVector(ra, dec));
+            const points = [];
+            for (let i = 0; i < corners.length; i++) {
+                const a = corners[i];
+                const b = corners[(i + 1) % corners.length];
+                for (let k = 0; k < 12; k++) {
+                    const t = k / 12;
+                    const v = [0, 1, 2].map((j) => a[j] * (1 - t) + b[j] * t);
+                    const n = Math.hypot(...v);
+                    points.push(v.map((x) => x / n));
+                }
+            }
+            strokeSkyPath(points, B, s, w, h, true);
+            octx.fill();
+        }
+    }
+
+    function drawMarkers(B, s, w, h) {
+        markerHits = [];
+        octx.font = "11px Inter, sans-serif";
+
+        for (const marker of markers) {
+            const p = project(toVector(marker.ra, marker.dec), B, s, w, h);
+            if (!p || p.x < -20 || p.y < -20 || p.x > w + 20 || p.y > h + 20) continue;
+
+            octx.fillStyle = "rgba(220, 235, 255, .95)";
+            octx.beginPath();
+            octx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+            octx.fill();
+            octx.strokeStyle = "rgba(0, 0, 0, .7)";
+            octx.lineWidth = 1;
+            octx.stroke();
+
+            octx.fillStyle = "rgba(220, 235, 255, .9)";
+            octx.shadowColor = "#000";
+            octx.shadowBlur = 4;
+            octx.fillText(marker.name, p.x + 8, p.y + 4);
+            octx.shadowBlur = 0;
+
+            markerHits.push({ marker, x: p.x, y: p.y });
+        }
+    }
+
+    function drawTarget(B, s, w, h) {
+        if (!target) return;
+        const p = project(toVector(target.ra, target.dec), B, s, w, h);
+        if (!p) return;
+
+        octx.strokeStyle = "#ffd479";
+        octx.lineWidth = 1.5;
+        octx.beginPath();
+        octx.arc(p.x, p.y, 11, 0, Math.PI * 2);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            octx.moveTo(p.x + dx * 15, p.y + dy * 15);
+            octx.lineTo(p.x + dx * 24, p.y + dy * 24);
+        }
+        octx.stroke();
+
+        // Skip the label when a marker already names this spot.
+        if (target.label && !markers.some((m) => m.name === target.label)) {
+            octx.font = "600 12px Inter, sans-serif";
+            octx.fillStyle = "#ffd479";
+            octx.shadowColor = "#000";
+            octx.shadowBlur = 5;
+            octx.fillText(target.label, p.x + 28, p.y - 14);
+            octx.shadowBlur = 0;
+        }
+    }
+
+    // ---------- animation ----------
+
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    function flyTo(ra, dec, fov) {
+        const endFov = Math.min(MAX_FOV, Math.max(MIN_FOV, fov || state.fov));
+
+        if (!ready || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            state.ra = ra;
+            state.dec = dec;
+            state.fov = endFov;
+            requestDraw();
+            return;
+        }
+
+        const from = toVector(state.ra, state.dec);
+        const to = toVector(ra, dec);
+        const angle = Math.acos(Math.max(-1, Math.min(1, dot(from, to))));
+
+        animation = {
+            start: null,
+            duration: 900 + Math.min(1200, angle / DEG * 8),
+            from, to, angle,
+            fov0: state.fov,
+            fov1: endFov,
+            // Long trips pull back first so you see where you are going.
+            fovMid: angle > 40 * DEG ? Math.max(state.fov, endFov, 100) : null
+        };
+        requestDraw();
+    }
+
+    function stepAnimation(time) {
+        const a = animation;
+        if (a.start === null) a.start = time;
+        const t = Math.min(1, (time - a.start) / a.duration);
+        const e = ease(t);
+
+        let v = a.to;
+        if (a.angle > 1e-6) {
+            const sa = Math.sin(a.angle);
+            const k0 = Math.sin((1 - e) * a.angle) / sa;
+            const k1 = Math.sin(e * a.angle) / sa;
+            v = [0, 1, 2].map((i) => k0 * a.from[i] + k1 * a.to[i]);
+        }
+
+        const centre = toRaDec(v);
+        state.ra = centre.ra;
+        state.dec = Math.max(-89.5, Math.min(89.5, centre.dec));
+
+        const logLerp = (x, y, u) => Math.exp(Math.log(x) + (Math.log(y) - Math.log(x)) * u);
+        if (a.fovMid) {
+            state.fov = t < 0.5
+                ? logLerp(a.fov0, a.fovMid, ease(t * 2))
+                : logLerp(a.fovMid, a.fov1, ease(t * 2 - 1));
+        } else {
+            state.fov = logLerp(a.fov0, a.fov1, e);
+        }
+
+        if (t >= 1) {
+            animation = null;
+            return true;
+        }
+        return false;
+    }
+
+    // ---------- interaction ----------
+
+    const pointers = new Map();
+    let moved = false;
+
+    function local(event) {
+        const box = overlay.getBoundingClientRect();
+        return { x: event.clientX - box.left, y: event.clientY - box.top };
+    }
+
+    function zoomBy(factor) {
+        animation = null;
+        state.fov = Math.min(MAX_FOV, Math.max(MIN_FOV, state.fov * factor));
+        requestDraw();
+    }
+
+    function panBy(dx, dy) {
+        animation = null;
+        const s = pixelScale();
+        const cos = Math.max(0.05, Math.cos(state.dec * DEG));
+        state.ra = (state.ra + dx / s / DEG / cos + 360) % 360;
+        state.dec = Math.max(-89.5, Math.min(89.5, state.dec + dy / s / DEG));
+        requestDraw();
+    }
+
+    overlay.addEventListener("wheel", (event) => {
+        if (!ready) return;
+        event.preventDefault();
+        zoomBy(Math.exp(event.deltaY * 0.0012));
+    }, { passive: false });
+
+    overlay.addEventListener("pointerdown", (event) => {
+        if (!ready) return;
+        try {
+            overlay.setPointerCapture(event.pointerId);
+        } catch {
+            // Capture can fail if the pointer has already lifted.
+        }
+        pointers.set(event.pointerId, local(event));
+        moved = false;
+        overlay.classList.add("dragging");
+    });
+
+    overlay.addEventListener("pointermove", (event) => {
+        if (!ready) return;
+        const p = local(event);
+
+        if (pointers.has(event.pointerId)) {
+            const previous = pointers.get(event.pointerId);
+
+            if (pointers.size === 1) {
+                const dx = p.x - previous.x;
+                const dy = p.y - previous.y;
+                if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+                if (moved) panBy(dx, dy);
+            } else if (pointers.size === 2) {
+                const other = [...pointers.entries()].find(([id]) => id !== event.pointerId)[1];
+                const before = Math.hypot(previous.x - other.x, previous.y - other.y);
+                const after = Math.hypot(p.x - other.x, p.y - other.y);
+                if (after > 0) zoomBy(before / after);
+                moved = true;
+            }
+
+            pointers.set(event.pointerId, p);
+        }
+
+        const sky = unproject(p.x, p.y);
+        $("dome-readout").textContent = formatRaDec(sky.ra, sky.dec);
+    });
+
+    overlay.addEventListener("pointerup", (event) => {
+        const p = local(event);
+        const wasClick = pointers.size === 1 && !moved;
+        pointers.delete(event.pointerId);
+        if (pointers.size === 0) overlay.classList.remove("dragging");
+        if (wasClick) choose(p);
+    });
+
+    overlay.addEventListener("pointercancel", (event) => {
+        pointers.delete(event.pointerId);
+        overlay.classList.remove("dragging");
+    });
+
+    overlay.addEventListener("pointerleave", () => {
+        if (!pointers.size) $("dome-readout").textContent = "";
+    });
+
+    overlay.addEventListener("keydown", (event) => {
+        const stepPx = 40;
+        const actions = {
+            ArrowLeft: () => panBy(stepPx, 0),
+            ArrowRight: () => panBy(-stepPx, 0),
+            ArrowUp: () => panBy(0, stepPx),
+            ArrowDown: () => panBy(0, -stepPx),
+            "+": () => zoomBy(1 / 1.4),
+            "=": () => zoomBy(1 / 1.4),
+            "-": () => zoomBy(1.4),
+            Enter: () => handlers.pick && handlers.pick({ ra: state.ra, dec: state.dec })
+        };
+        if (!actions[event.key]) return;
+        event.preventDefault();
+        actions[event.key]();
+    });
+
+    function choose(p) {
+        const hit = markerHits.find((m) => Math.hypot(m.x - p.x, m.y - p.y) <= 14);
+        if (hit && handlers.marker) {
+            handlers.marker(hit.marker);
+            return;
+        }
+        if (handlers.pick) handlers.pick(unproject(p.x, p.y));
+    }
+
+    // ---------- public API ----------
+
+    window.skyDome = {
+        flyTo,
+        setTarget(ra, dec, label) {
+            target = ra === null ? null : { ra, dec, label };
+            requestDraw();
+        },
+        setFootprints(list) {
+            footprints = (list || []).filter((polygon) => Array.isArray(polygon) && polygon.length >= 3);
+            requestDraw();
+        },
+        setMarkers(list) {
+            markers = list || [];
+            requestDraw();
+        },
+        onPick(fn) { handlers.pick = fn; },
+        onMarker(fn) { handlers.marker = fn; }
+    };
+
+    // ---------- start ----------
+
+    let started = false;
+
+    async function start() {
+        try {
+            await loadTexture();
+            ready = true;
+            $("dome-loading").hidden = true;
+            requestDraw();
+        } catch (error) {
+            $("dome-loading").textContent = error.message;
+        }
+    }
+
+    function startWhenNear() {
+        if (started) return;
+        const box = wrap.getBoundingClientRect();
+        if (box.top < window.innerHeight + 400 && box.bottom > -400) {
+            started = true;
+            window.removeEventListener("scroll", startWhenNear);
+            start();
+        }
+    }
+
+    try {
+        if (initGL()) {
+            wrap.hidden = false;
+            new ResizeObserver(requestDraw).observe(stage);
+            window.addEventListener("scroll", startWhenNear, { passive: true });
+            startWhenNear();
+        }
+    } catch (error) {
+        console.warn("Sky dome unavailable:", error);
+        wrap.hidden = true;
+    }
+
+})();
+
 /* ===================== COSMIC EXPLORER ===================== */
 
 (function () {
@@ -1999,9 +2746,10 @@ document.addEventListener("keydown", function(event) {
 
     // ---------- search flow ----------
 
-    async function explore({ name = null, ra = null, dec = null, label = null }) {
+    async function explore({ name = null, ra = null, dec = null, label = null, fromDome = false }) {
         const id = ++requestId;
         let found = null;
+        const dome = window.skyDome;
 
         setBusy(true);
 
@@ -2022,6 +2770,13 @@ document.addEventListener("keydown", function(event) {
             raInput.value = Number(ra.toFixed(5));
             decInput.value = Number(dec.toFixed(5));
 
+            // Swing the sky dome to the target while the archive is searched.
+            if (dome) {
+                dome.setTarget(ra, dec, label || `${ra.toFixed(2)}°, ${dec >= 0 ? "+" : ""}${dec.toFixed(2)}°`);
+                dome.setFootprints([]);
+                dome.flyTo(ra, dec, 24);
+            }
+
             const radius = Number(radiusInput.value) || 10;
             const started = Date.now();
 
@@ -2033,10 +2788,21 @@ document.addEventListener("keydown", function(event) {
             if (id !== requestId) return;
 
             stopTimer();
-            render(data, { ra, dec, radius, label });
+            render(data, { ra, dec, radius, label, scroll: !fromDome });
+
+            // Outline the most recent SPHEREx images on the dome.
+            if (dome) {
+                dome.setFootprints(
+                    data.matching_results.epochs.slice(-12)
+                        .map((epoch) => (epoch.products.find((p) => p.footprint) || {}).footprint)
+                );
+            }
 
             const seconds = ((Date.now() - started) / 1000).toFixed(1);
-            showStatus(`Archive answered in ${seconds}s.`);
+            showStatus(
+                `Archive answered in ${seconds}s.` +
+                (fromDome && data.archive_total ? " Cyan squares on the sky are SPHEREx's latest images here; full results are below." : "")
+            );
 
         } catch (error) {
             if (id !== requestId) return;
@@ -2080,7 +2846,8 @@ document.addEventListener("keydown", function(event) {
         renderTimeline(summary.visit_dates);
         renderObservations(data);
 
-        results.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Searches started on the dome stay on the dome so you can see the outlines.
+        if (query.scroll !== false) results.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function renderSpectrum(bands) {
@@ -2244,6 +3011,24 @@ document.addEventListener("keydown", function(event) {
         });
         $("presets").append(button);
     });
+
+    // Sky dome: famous objects as clickable markers; clicking empty sky searches there.
+    if (window.skyDome) {
+        window.skyDome.setMarkers(PRESETS.concat([
+            { name: "Large Magellanic Cloud", ra: 80.8938, dec: -69.7561 },
+            { name: "Whirlpool Galaxy", ra: 202.4696, dec: 47.1952 }
+        ]));
+
+        window.skyDome.onMarker((marker) => {
+            showMatch(null);
+            explore({ ra: marker.ra, dec: marker.dec, label: marker.name, fromDome: true });
+        });
+
+        window.skyDome.onPick(({ ra, dec }) => {
+            showMatch(null);
+            explore({ ra, dec, label: null, fromDome: true });
+        });
+    }
 
     $("name-form").addEventListener("submit", (event) => {
         event.preventDefault();
