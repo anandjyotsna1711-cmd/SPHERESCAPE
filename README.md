@@ -77,7 +77,7 @@ Open http://127.0.0.1:5000.
 | `/` | Landing page |
 | `/first-light` | Processed observation image (PNG) |
 | `/sky-dome.jpg` | SPHEREx all-sky map re-projected to RA/Dec for the sky dome (built by `build_sky_dome_texture.py`) |
-| `/api/observations?ra=<deg>&dec=<deg>&radius=<arcsec>&limit=<n>` | Searches the IRSA SPHEREx archive (`spherex_qr2`) at a sky position. Products are returned newest first. |
+| `/api/observations?ra=<deg>&dec=<deg>&radius=<arcsec>&limit=<n>` | Searches the IRSA SPHEREx archive at a sky position, across Data Release 1 (`spherex_dr1`, Jul 2025 – Jan 2026) and the newest quick release (`spherex_qr3`, from Jul 2026). Products are returned newest first. |
 | `/api/observations/matched?ra=...&dec=...` | The same search, grouped into one entry per observation, plus an `archive_summary`. Each product includes its sky `footprint` as `[[ra, dec], ...]` corners |
 | `/api/resolve?name=<object>` | Turns an object name into RA/Dec. Exact names and catalogue IDs (`M31`, `NGC 224`) go through CDS Sesame. Anything else falls back to the closest SIMBAD match, so `Canis Major` finds the Canis Major Dwarf Galaxy; `exact: false` and `alternatives` say when that happened. |
 | `/api/science` | Precomputed analysis results for the "What we found" section: `results/psf_zones.json` and `results/source_validation.json` |

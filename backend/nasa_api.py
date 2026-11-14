@@ -4,6 +4,7 @@ from astropy.coordinates import SkyCoord
 from astropy import units as u
 from astropy.utils.data import conf
 
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import numpy as np
 
@@ -17,9 +18,19 @@ DATA_DIR = PROJECT_DIR / "data" / "raw"
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-COLLECTION = "spherex_qr2"
+# NASA retired the "spherex_qr2" quick release in Nov 2026. Its data now
+# lives in Data Release 1 (first passes, Jul 2025 - Jan 2026) and the newest
+# quick release (from Jul 2026). Searching both covers every pass so far.
+COLLECTIONS = ["spherex_dr1", "spherex_qr3"]
 
 conf.remote_timeout = 180
+
+
+def _query_collection(coordinate, radius, collection):
+    try:
+        return collection, Irsa.query_sia(pos=(coordinate, radius), collection=collection), None
+    except Exception as error:
+        return collection, None, error
 
 
 # SEARCH SPHEREX ARCHIVE
@@ -39,15 +50,27 @@ def search_spherex_observations(
         unit="deg"
     )
 
-    results = Irsa.query_sia(
-        pos=(
-            coordinate,
-            float(radius_arcsec) * u.arcsec
-        ),
-        collection=COLLECTION
-    )
+    radius = float(radius_arcsec) * u.arcsec
 
-    print("Observations found:", len(results))
+    # Query the collections in parallel so two searches take no longer than one.
+    with ThreadPoolExecutor(max_workers=len(COLLECTIONS)) as pool:
+        answers = list(pool.map(
+            lambda name: _query_collection(coordinate, radius, name),
+            COLLECTIONS
+        ))
+
+    tables = [table for _, table, _ in answers if table is not None]
+    errors = [f"{name}: {error}" for name, _, error in answers if error is not None]
+
+    for message in errors:
+        print("Collection query failed:", message)
+
+    if not tables:
+        raise RuntimeError("All SPHEREx archive queries failed. " + "; ".join(errors))
+
+    total_found = sum(len(table) for table in tables)
+
+    print("Observations found:", total_found)
 
     # Archive metadata fields
     columns_to_return = [
@@ -68,19 +91,16 @@ def search_spherex_observations(
         "access_url"
     ]
 
-    available_columns = [
-        column
-        for column in columns_to_return
-        if column in results.colnames
-    ]
-
     observations = []
 
-    for row in results:
+    for row in (row for table in tables for row in table):
 
         observation = {}
 
-        for column in available_columns:
+        for column in columns_to_return:
+
+            if column not in row.colnames:
+                continue
 
             value = row[column]
 
@@ -119,8 +139,8 @@ def search_spherex_observations(
 
     return {
         "mission": "SPHEREx",
-        "collection": COLLECTION,
-        "total_found": len(results),
+        "collection": ", ".join(COLLECTIONS),
+        "total_found": total_found,
         "returned": len(observations),
         "summary": summary,
         "observations": observations
